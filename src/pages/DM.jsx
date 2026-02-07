@@ -22,7 +22,8 @@ const DM = ({
     showMediaGallery,
     handleToggleMedia,
     showAttachments,
-    handleToggleAttachments
+    handleToggleAttachments,
+    onCloseSidebar
 }) => {
     return (
         <>
@@ -51,6 +52,7 @@ const DM = ({
                     setShowMediaGallery={handleToggleMedia}
                     showAttachments={showAttachments}
                     setShowAttachments={handleToggleAttachments}
+                    onCloseSidebar={onCloseSidebar}
                 />
             ) : (
                 <ChatPlaceholder />

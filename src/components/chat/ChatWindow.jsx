@@ -12,8 +12,8 @@ const ChatWindow = ({
     setShowInfo,
     showMediaGallery,
     setShowMediaGallery,
-    showAttachments,
-    setShowAttachments
+    setShowAttachments,
+    onCloseSidebar
 }) => {
     const [message, setMessage] = useState('');
     const [mediaTab, setMediaTab] = useState('media'); // 'media', 'docs', 'links'
@@ -185,6 +185,9 @@ const ChatWindow = ({
                                     </button>
                                     <h3>Media, Docs and Links</h3>
                                 </div>
+                                <button className="close-info-btn" onClick={onCloseSidebar}>
+                                    <X size={20} color="#718096" />
+                                </button>
                             </div>
 
                             <div className="media-tabs">
@@ -221,6 +224,9 @@ const ChatWindow = ({
                                     </button>
                                     <h3>Contact Info</h3>
                                 </div>
+                                <button className="close-info-btn" onClick={onCloseSidebar}>
+                                    <X size={20} color="#718096" />
+                                </button>
                             </div>
 
                             <div className="contact-profile-section">

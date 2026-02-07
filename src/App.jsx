@@ -147,6 +147,14 @@ function App() {
     }
   };
 
+  const handleCloseSidebar = () => {
+    if (showMediaGallery) {
+      window.history.go(-2);
+    } else if (showInfo) {
+      window.history.go(-1);
+    }
+  };
+
   const handleToggleMenu = (val) => {
     if (val !== showMenu) {
       if (val) {
@@ -272,6 +280,7 @@ function App() {
         handleToggleMedia={handleToggleMedia}
         showAttachments={showAttachments}
         handleToggleAttachments={handleToggleAttachments}
+        onCloseSidebar={handleCloseSidebar}
       />
 
       {/* Global Delete Confirmation Modal */}
