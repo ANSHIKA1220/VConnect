@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import MainLayout from '../layouts/MainLayout';
 import ProfileHeader from '../components/profile/ProfileHeader';
 import AboutSection from '../components/profile/AboutSection';
 import InterestsSection from '../components/profile/InterestsSection';
@@ -54,6 +55,7 @@ function Profile() {
   }, [profileData]);
 
   return (
+    <MainLayout>
     <div className="max-w-md lg:max-w-4xl xl:max-w-5xl mx-auto">
       <ProfileHeader
         name={profileData.name}
@@ -100,6 +102,7 @@ function Profile() {
         onAdd={handleAddSocialLink}
       />
     </div>
+    </MainLayout>
   );
 }
 

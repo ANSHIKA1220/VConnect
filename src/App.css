@@ -1,175 +1,62 @@
+/* ================= THEME VARIABLES ================= */
+
+:root {
+  --bg-main: #f5f7fb;
+  --bg-card: #ffffff;
+  --bg-soft: #edf2f7;
+  --bg-hover: #f1f5f9;
+
+  --text-primary: #1a202c;
+  --text-secondary: #64748b;
+
+  --border-color: #e2e8f0;
+  --accent: #3182ce;
+
+  --bubble-received: #ffffff;
+  --bubble-sent: #3182ce;
+
+  --danger-bg: #fff5f5;
+}
+
+body.dark-mode {
+  --bg-main: #020617;
+  --bg-card: #040d1a;
+  --bg-soft: #0d1b2a;
+  --bg-hover: #1e293b;
+
+  --text-primary: #e5e7eb;
+  --text-secondary: #94a3b8;
+
+  --border-color: #1e293b;
+  --accent: #60a5fa;
+
+  --bubble-received: #020617;
+  --bubble-sent: #101d49;
+
+  --danger-bg: #441a1a;
+}
+
+/* ================= BASE ================= */
+
 #root {
   width: 100%;
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-  text-align: left;
-  display: flex;
+  min-height: 100vh;
+  background: var(--bg-main);
+  color: var(--text-primary);
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-
-/* Global Delete Modal Styles */
-.delete-modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2000;
-  animation: fadeInOverlay 0.2s ease-out;
-}
+/* ================= MODAL ================= */
 
 .delete-modal {
-  background-color: white;
-  padding: 32px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  transform-origin: center;
-  animation: scaleInModal 0.2s ease-out;
-  text-align: center;
-  z-index: 2001;
-  /* Ensure it stays above overlay */
-}
-
-body.dark-mode .delete-modal {
-  background-color: #040d1a;
+  background: var(--bg-card);
   border: 1px solid var(--border-color);
 }
 
-.delete-modal h3 {
-  font-size: 20px;
-  font-weight: 700;
-  color: #1A202C;
-  margin-bottom: 8px;
-}
+.delete-modal h3 { color: var(--text-primary); }
+.delete-modal p { color: var(--text-secondary); }
 
-body.dark-mode .delete-modal h3 {
-  color: var(--text-primary);
-}
+.btn-cancel { background: var(--bg-soft); color: var(--text-primary); }
+.btn-cancel:hover { background: var(--bg-hover); }
 
-.delete-modal p {
-  color: #718096;
-  font-size: 15px;
-  margin-bottom: 24px;
-}
-
-body.dark-mode .delete-modal p {
-  color: var(--text-secondary);
-}
-
-.delete-modal-actions {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-}
-
-.btn-modal {
-  padding: 10px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  font-size: 14px;
-  cursor: pointer;
-  border: none;
-  transition: all 0.2s;
-}
-
-.btn-cancel {
-  background-color: #EDF2F7;
-  color: #4A5568;
-}
-
-.btn-cancel:hover {
-  background-color: #E2E8F0;
-}
-
-body.dark-mode .btn-cancel {
-  background-color: #0a1929;
-  color: var(--text-primary);
-}
-
-body.dark-mode .btn-cancel:hover {
-  background-color: #1e3a5f;
-}
-
-.btn-delete {
-  background-color: #3182CE;
-  /* Requested Blue */
-  color: white;
-}
-
-.btn-delete:hover {
-  background-color: #2B6CB0;
-}
-
-body.dark-mode .btn-delete:hover {
-  background-color: #2563EB;
-}
-
-body.dark-mode .delete-modal-overlay {
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: none;
-}
-
-@keyframes fadeInOverlay {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes scaleInModal {
-  from {
-    transform: scale(0.95);
-    opacity: 0;
-  }
-
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
+.btn-delete { background: var(--accent); }
+.btn-delete:hover { filter: brightness(0.9); }

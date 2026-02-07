@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Search, MoreHorizontal, PlusCircle, CheckCheck, Mail, Trash2 } from 'lucide-react';
 import './MessageList.css';
 

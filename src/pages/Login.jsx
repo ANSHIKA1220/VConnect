@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (event) => {
     event.preventDefault();
-    console.log('Login attempt:', { email, password });
-    alert('Login functionality would be implemented here');
+    localStorage.setItem('vconnect-auth', 'true');
+    navigate('/', { replace: true });
   };
 
   const styles = {
@@ -232,14 +234,14 @@ const Login = () => {
           </button>
 
           <div style={styles.signupLink}>
-            New here? <a 
-              href="/signup" 
+            New here? <Link 
+              to="/signup" 
               style={styles.signupLinkA}
               onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
               onMouseOut={(e) => e.target.style.textDecoration = 'none'}
             >
               Sign Up
-            </a>
+            </Link>
           </div>
 
           

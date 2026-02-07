@@ -1,15 +1,12 @@
 .navigation {
-    width: var(--sidebar-width);
-    height: 100%;
-    background-color: var(--white);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 0;
-    border-right: 1px solid var(--border-color);
-    flex-shrink: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 80px;
+  height: 100vh;
+  z-index: 1000;
 }
+
 
 body.dark-mode .navigation {
     background-color: #040d1a;

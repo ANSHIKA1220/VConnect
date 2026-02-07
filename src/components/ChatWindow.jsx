@@ -1,5 +1,5 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Phone, Video, MoreVertical, ArrowLeft, Info, Plus, Send, File, Image as ImageIcon, Camera, FileText, X, Trash2 } from 'lucide-react';
+import { useState, useRef, useEffect } from 'react';
+import { ArrowLeft, Info, Plus, Send, File, Image as ImageIcon, Camera, FileText, X, Trash2 } from 'lucide-react';
 import './ChatWindow.css';
 
 const ChatWindow = ({ chat, messages, onBack, onDeleteChat, onSendMessage }) => {

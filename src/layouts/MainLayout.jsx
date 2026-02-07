@@ -3,12 +3,19 @@ import Navbar from '../components/layout/Navbar';
 
 function MainLayout({ children }) {
   return (
-    <div className="min-h-screen bg-background">
+    <div>
+
+      {/* Fixed Sidebar */}
       <SideNavigation />
-      <div className="ml-16">
+
+      {/* Page Area */}
+      <div style={{ paddingLeft: "224px", minHeight: "100vh" }}>
         <Navbar />
-        {children}
+        <div style={{ padding: "24px" }}>
+          {children}
+        </div>
       </div>
+
     </div>
   );
 }

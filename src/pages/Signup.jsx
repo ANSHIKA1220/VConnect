@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
 const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const navigate = useNavigate();
 
   const handleSignup = (event) => {
     event.preventDefault();
@@ -19,8 +21,8 @@ const SignUp = () => {
       return;
     }
     
-    console.log('Signup attempt:', { email, password });
-    alert('Sign up functionality would be implemented here');
+    localStorage.setItem('vconnect-auth', 'true');
+    navigate('/', { replace: true });
   };
 
   const styles = {
@@ -173,14 +175,14 @@ const SignUp = () => {
   return (
     <div style={styles.container}>
       <div style={styles.leftSide}>
-        <a 
-          href="/login" 
+        <Link 
+          to="/login" 
           style={styles.backLink}
           onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
           onMouseOut={(e) => e.target.style.textDecoration = 'none'}
         >
           ← Back to login
-        </a>
+        </Link>
         
         <div style={styles.icon}>
           <svg style={styles.iconSvg} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -308,14 +310,14 @@ const SignUp = () => {
           </button>
 
           <div style={styles.loginLink}>
-            Already have an account? <a 
-              href="/login" 
+            Already have an account? <Link 
+              to="/login" 
               style={styles.loginLinkA}
               onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
               onMouseOut={(e) => e.target.style.textDecoration = 'none'}
             >
               Sign In
-            </a>
+            </Link>
           </div>
         </form>
       </div>

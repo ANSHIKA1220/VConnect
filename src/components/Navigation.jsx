@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 import { Home, MessageSquare, Compass, User, Moon, GraduationCap } from 'lucide-react';
 import './Navigation.css';
 
@@ -11,20 +11,20 @@ const Navigation = ({ onResetView, isDarkMode, onToggleDarkMode }) => {
         </div>
 
         <div className="nav-items">
-          <div className="nav-item">
+          <Link to="/" className="nav-item">
             <Home size={24} color="#A0AEC0" />
-          </div>
-          <div className="nav-item active" onClick={onResetView}>
+          </Link>
+          <Link to="/dm" className="nav-item active" onClick={onResetView}>
             <div className="active-indicator"></div>
             <MessageSquare size={24} color="#2B6CB0" />
             <div className="nav-badge"></div>
-          </div>
-          <div className="nav-item">
+          </Link>
+          <Link to="/discover" className="nav-item">
             <Compass size={24} color="#A0AEC0" />
-          </div>
-          <div className="nav-item">
+          </Link>
+          <Link to="/profile" className="nav-item">
             <User size={24} color="#A0AEC0" />
-          </div>
+          </Link>
         </div>
       </div>
 
