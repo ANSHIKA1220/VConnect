@@ -121,7 +121,7 @@ body.dark-mode .back-button {
     background-blend-mode: overlay;
     background-size: 400px;
     background-repeat: repeat;
-    background-image: url('./image/IMG-20260202-WA0045.jpg');
+    background-image: url('/images/IMG-20260202-WA0045.jpg');
     display: flex;
     flex-direction: column;
     gap: 24px;
