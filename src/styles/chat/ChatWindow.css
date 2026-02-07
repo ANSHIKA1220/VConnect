@@ -443,6 +443,9 @@ body.dark-mode .chat-text-input {
     border-left: 1px solid var(--border-color);
     display: flex;
     flex-direction: column;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
     animation: sidebarSlideIn 0.3s ease-out forwards;
 }
 
