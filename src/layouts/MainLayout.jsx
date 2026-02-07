@@ -1,13 +1,16 @@
-import Sidebar from "../components/Sidebar";
+import SideNavigation from '../components/layout/SideNavigation';
+import Navbar from '../components/layout/Navbar';
 
-export default function MainLayout({ children }) {
+function MainLayout({ children }) {
   return (
-    <div style={{ display: "flex", minHeight: "100vh", background: "#f5f7fb" }}>
-      <Sidebar />
-
-      <div style={{ flex: 1 }}>
+    <div className="min-h-screen bg-background">
+      <SideNavigation />
+      <div className="ml-16">
+        <Navbar />
         {children}
       </div>
     </div>
   );
 }
+
+export default MainLayout;
