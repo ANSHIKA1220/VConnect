@@ -1,0 +1,69 @@
+:root {
+  --bg-color: #F8F9FD;
+  --sidebar-width: 80px;
+  --message-list-width: 380px;
+  --primary-blue: #3182CE;
+  /* Brighter blue from screenshot */
+  --primary-blue-light: #EBF8FF;
+  --text-primary: #1A202C;
+  --text-secondary: #718096;
+  --border-color: #EDF2F7;
+  --white: #ffffff;
+  --hover-bg: #F7FAFC;
+  --chat-bg: rgba(219, 234, 254, 0.3);
+}
+
+/* Dark Mode Variables */
+body.dark-mode {
+  --bg-color: #040d1a;
+  --text-primary: #E2E8F0;
+  --text-secondary: #94A3B8;
+  --border-color: #0a1929;
+  --white: #040d1a;
+  --hover-bg: #0a1929;
+  --chat-bg: #1F3B4D;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  height: 100vh;
+  height: 100dvh;
+  /* Use dynamic viewport height for mobile */
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+.app-container {
+  display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #CBD5E0;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #A0AEC0;
+}
