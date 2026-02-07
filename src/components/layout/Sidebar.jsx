@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 function SideNavigation() {
   const [avatar, setAvatar] = useState('/placeholder.svg');
@@ -39,8 +39,8 @@ function SideNavigation() {
       {/* Navigation Icons */}
       <nav className="flex flex-col items-center gap-4 flex-1">
         {/* Home */}
-        <a 
-          href="/home" 
+        <a
+          href="/home"
           className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all"
           title="Home"
         >
@@ -50,8 +50,8 @@ function SideNavigation() {
         </a>
 
         {/* Messages/DMs - Active State */}
-        <a 
-          href="/dm" 
+        <a
+          href="/dm"
           className="w-12 h-12 flex items-center justify-center rounded-xl bg-blue-50 text-blue-500 transition-all"
           title="Messages"
         >
@@ -61,8 +61,8 @@ function SideNavigation() {
         </a>
 
         {/* Discover */}
-        <a 
-          href="/discover" 
+        <a
+          href="/discover"
           className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all"
           title="Discover"
         >
@@ -72,8 +72,8 @@ function SideNavigation() {
         </a>
 
         {/* Profile */}
-        <a 
-          href="/profile" 
+        <a
+          href="/profile"
           className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all"
           title="Profile"
         >
@@ -83,7 +83,7 @@ function SideNavigation() {
         </a>
 
         {/* Dark Mode Toggle */}
-        <button 
+        <button
           className="w-12 h-12 flex items-center justify-center rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-all mt-auto"
           title="Toggle Dark Mode"
         >
@@ -95,7 +95,7 @@ function SideNavigation() {
 
       {/* Profile Avatar at Bottom */}
       <div className="mt-6">
-        <div 
+        <div
           className="w-12 h-12 rounded-full overflow-hidden cursor-pointer ring-2 ring-gray-100 hover:ring-blue-200 transition-all"
           onClick={handleAvatarClick}
           title="Your Profile"

@@ -1,3 +1,4 @@
+import React from 'react';
 import { Home, MessageSquare, Compass, User, Moon, GraduationCap, Sun } from 'lucide-react';
 import '../../styles/chat/Navigation.css';
 

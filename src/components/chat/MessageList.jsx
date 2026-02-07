@@ -1,4 +1,4 @@
-
+import React, { useState } from 'react';
 import { Search, MoreHorizontal, PlusCircle, CheckCheck, Mail, Trash2 } from 'lucide-react';
 import '../../styles/chat/MessageList.css';
 

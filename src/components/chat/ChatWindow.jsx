@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from 'react';
 import { Phone, Video, MoreVertical, ArrowLeft, Info, Plus, Send, File, Image as ImageIcon, Camera, FileText, X, Trash2 } from 'lucide-react';
 import '../../styles/chat/ChatWindow.css';
 
