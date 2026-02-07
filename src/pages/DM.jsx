@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState } from 'react';
 import MainLayout from '../layouts/MainLayout';
 import MessageList, { mockChats } from "../components/MessageList";
@@ -162,5 +163,67 @@ function DM() {
     </MainLayout>
   );
 }
+=======
+import React from 'react';
+import MessageList from '../components/chat/MessageList';
+import ChatWindow from '../components/chat/ChatWindow';
+import ChatPlaceholder from '../components/chat/ChatPlaceholder';
+
+const DM = ({
+    chats,
+    selectedChatId,
+    activeChat,
+    messages,
+    handleChatSelect,
+    handleMarkAllRead,
+    handleMarkAsUnread,
+    triggerDelete,
+    showMenu,
+    handleToggleMenu,
+    contextMenu,
+    handleSetContextMenu,
+    handleSendMessage,
+    showInfo,
+    handleToggleInfo,
+    showMediaGallery,
+    handleToggleMedia,
+    showAttachments,
+    handleToggleAttachments
+}) => {
+    return (
+        <>
+            <MessageList
+                chats={chats}
+                activeChatId={selectedChatId}
+                onChatSelect={handleChatSelect}
+                onMarkAllRead={handleMarkAllRead}
+                onMarkAsUnread={handleMarkAsUnread}
+                onDeleteChat={triggerDelete}
+                showMenu={showMenu}
+                setShowMenu={handleToggleMenu}
+                contextMenu={contextMenu}
+                setContextMenu={handleSetContextMenu}
+            />
+            {selectedChatId && activeChat ? (
+                <ChatWindow
+                    chat={activeChat}
+                    messages={messages[selectedChatId] || []}
+                    onBack={() => window.history.back()}
+                    onDeleteChat={triggerDelete}
+                    onSendMessage={(text) => handleSendMessage(selectedChatId, text)}
+                    showInfo={showInfo}
+                    setShowInfo={handleToggleInfo}
+                    showMediaGallery={showMediaGallery}
+                    setShowMediaGallery={handleToggleMedia}
+                    showAttachments={showAttachments}
+                    setShowAttachments={handleToggleAttachments}
+                />
+            ) : (
+                <ChatPlaceholder />
+            )}
+        </>
+    );
+};
+>>>>>>> 77602e3d511ba64306b12f0587d2f044ad746b78
 
 export default DM;
