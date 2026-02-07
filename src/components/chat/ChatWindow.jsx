@@ -12,6 +12,7 @@ const ChatWindow = ({
     setShowInfo,
     showMediaGallery,
     setShowMediaGallery,
+    showAttachments,
     setShowAttachments,
     onCloseSidebar
 }) => {
