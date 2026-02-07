@@ -1,6 +1,7 @@
 #root {
   width: 100%;
   height: 100vh;
+  height: 100dvh;
   margin: 0;
   padding: 0;
   text-align: left;
@@ -159,6 +160,16 @@ body.dark-mode .delete-modal-overlay {
 
   to {
     opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .chat-placeholder {
+    display: none;
+  }
+
+  .app-container.has-active-chat .message-list-container {
+    display: none;
   }
 }
 

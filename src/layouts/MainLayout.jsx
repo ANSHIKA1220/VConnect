@@ -1,16 +1,17 @@
-import SideNavigation from '../components/layout/SideNavigation';
-import Navbar from '../components/layout/Navbar';
+import React from 'react';
+import Navigation from '../components/layout/Navigation';
 
-function MainLayout({ children }) {
+const MainLayout = ({ children, onResetView, isDarkMode, onToggleDarkMode, hasActiveChat }) => {
   return (
-    <div className="min-h-screen bg-background">
-      <SideNavigation />
-      <div className="ml-16">
-        <Navbar />
-        {children}
-      </div>
+    <div className={`app-container ${hasActiveChat ? 'has-active-chat' : ''}`}>
+      <Navigation
+        onResetView={onResetView}
+        isDarkMode={isDarkMode}
+        onToggleDarkMode={onToggleDarkMode}
+      />
+      {children}
     </div>
   );
-}
+};
 
 export default MainLayout;

@@ -1,14 +1,57 @@
 import React, { useState, useEffect } from 'react';
-import Navigation from './components/Navigation';
-import MessageList, { mockChats } from './components/MessageList';
-import ChatPlaceholder from './components/ChatPlaceholder';
-import ChatWindow from './components/ChatWindow';
+import MainLayout from './layouts/MainLayout';
+import DM from './pages/DM';
+import { mockChats } from './components/chat/MessageList';
 import './App.css';
 
 function App() {
   const [chats, setChats] = useState(mockChats);
   const [selectedChatId, setSelectedChatId] = useState(null);
+  const [showInfo, setShowInfo] = useState(false);
+  const [showMediaGallery, setShowMediaGallery] = useState(false);
+
+  // Menu and Modal states lifted for history integration
+  const [showMenu, setShowMenu] = useState(false);
+  const [contextMenu, setContextMenu] = useState(null);
+  const [showAttachments, setShowAttachments] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [chatToDelete, setChatToDelete] = useState(null);
+
   const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // History management for mobile back button
+  useEffect(() => {
+    const handlePopState = () => {
+      // Prioritize TOPMOST overlays (Modals) FIRST
+      if (showDeleteModal) {
+        setShowDeleteModal(false);
+      } else if (contextMenu) {
+        setContextMenu(null);
+      } else if (showMenu) {
+        setShowMenu(false);
+      } else if (showAttachments) {
+        setShowAttachments(false);
+      } else if (showMediaGallery) {
+        setShowMediaGallery(false);
+      } else if (showInfo) {
+        setShowInfo(false);
+      } else if (selectedChatId) {
+        setSelectedChatId(null);
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [showMediaGallery, showInfo, selectedChatId, showMenu, contextMenu, showAttachments, showDeleteModal]);
+
+  // Effect to handle navigation state cleanup
+  useEffect(() => {
+    if (!selectedChatId) {
+      setShowInfo(false);
+      setShowMediaGallery(false);
+      setShowAttachments(false);
+    }
+  }, [selectedChatId]);
 
   // Dynamic message history state
   const [messages, setMessages] = useState({
@@ -61,9 +104,78 @@ function App() {
   const activeChat = chats.find(c => c.id === selectedChatId);
 
   const handleChatSelect = (id) => {
+    if (id === selectedChatId) return;
+
+    const wasInChat = !!selectedChatId;
     setSelectedChatId(id);
-    // Optional: Mark as read on select? User didn't request this specifically, but it's common.
-    // Keeping strict to request: "mark all as read" is a specific action.
+    setShowInfo(false);
+    setShowMediaGallery(false);
+    setShowAttachments(false);
+
+    // Clear unread status when opening a chat
+    setChats(prev => prev.map(chat =>
+      chat.id === id
+        ? { ...chat, unread: false, unreadCount: 0, hasUnreadDot: false }
+        : chat
+    ));
+
+    // Push state only if we weren't already in a chat layer
+    if (!wasInChat) {
+      window.history.pushState({ type: 'chat' }, '');
+    }
+  };
+
+  const handleToggleInfo = (val) => {
+    if (val !== showInfo) {
+      if (val) {
+        setShowInfo(true);
+        window.history.pushState({ type: 'info' }, '');
+      } else {
+        window.history.back();
+      }
+    }
+  };
+
+  const handleToggleMedia = (val) => {
+    if (val !== showMediaGallery) {
+      if (val) {
+        setShowMediaGallery(true);
+        window.history.pushState({ type: 'media' }, '');
+      } else {
+        window.history.back();
+      }
+    }
+  };
+
+  const handleToggleMenu = (val) => {
+    if (val !== showMenu) {
+      if (val) {
+        setShowMenu(true);
+        window.history.pushState({ type: 'menu' }, '');
+      } else {
+        window.history.back();
+      }
+    }
+  };
+
+  const handleSetContextMenu = (val) => {
+    if (val) {
+      setContextMenu(val);
+      window.history.pushState({ type: 'context-menu' }, '');
+    } else if (contextMenu) {
+      window.history.back();
+    }
+  };
+
+  const handleToggleAttachments = (val) => {
+    if (val !== showAttachments) {
+      if (val) {
+        setShowAttachments(true);
+        window.history.pushState({ type: 'attachments' }, '');
+      } else {
+        window.history.back();
+      }
+    }
   };
 
   const handleMarkAllRead = () => {
@@ -114,53 +226,53 @@ function App() {
     ));
   };
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [chatToDelete, setChatToDelete] = useState(null);
-
   const confirmDeleteGlobal = () => {
     if (chatToDelete) {
       handleDeleteChat(chatToDelete);
     }
-    setShowDeleteModal(false);
+    window.history.back();
     setChatToDelete(null);
   };
 
   const triggerDelete = (chatId) => {
     setChatToDelete(chatId);
     setShowDeleteModal(true);
+    window.history.pushState({ type: 'modal' }, '');
   };
 
   const cancelDelete = () => {
-    setShowDeleteModal(false);
+    window.history.back();
     setChatToDelete(null);
   };
 
   return (
-    <div className="app-container">
-      <Navigation
-        onResetView={() => setSelectedChatId(null)}
-        isDarkMode={isDarkMode}
-        onToggleDarkMode={toggleDarkMode}
-      />
-      <MessageList
+    <MainLayout
+      onResetView={() => setSelectedChatId(null)}
+      isDarkMode={isDarkMode}
+      onToggleDarkMode={toggleDarkMode}
+      hasActiveChat={!!selectedChatId}
+    >
+      <DM
         chats={chats}
-        activeChatId={selectedChatId}
-        onChatSelect={handleChatSelect}
-        onMarkAllRead={handleMarkAllRead}
-        onMarkAsUnread={handleMarkAsUnread}
-        onDeleteChat={triggerDelete}
+        selectedChatId={selectedChatId}
+        activeChat={activeChat}
+        messages={messages}
+        handleChatSelect={handleChatSelect}
+        handleMarkAllRead={handleMarkAllRead}
+        handleMarkAsUnread={handleMarkAsUnread}
+        triggerDelete={triggerDelete}
+        showMenu={showMenu}
+        handleToggleMenu={handleToggleMenu}
+        contextMenu={contextMenu}
+        handleSetContextMenu={handleSetContextMenu}
+        handleSendMessage={handleSendMessage}
+        showInfo={showInfo}
+        handleToggleInfo={handleToggleInfo}
+        showMediaGallery={showMediaGallery}
+        handleToggleMedia={handleToggleMedia}
+        showAttachments={showAttachments}
+        handleToggleAttachments={handleToggleAttachments}
       />
-      {selectedChatId && activeChat ? (
-        <ChatWindow
-          chat={activeChat}
-          messages={messages[selectedChatId] || []}
-          onBack={() => setSelectedChatId(null)}
-          onDeleteChat={triggerDelete}
-          onSendMessage={(text) => handleSendMessage(selectedChatId, text)}
-        />
-      ) : (
-        <ChatPlaceholder />
-      )}
 
       {/* Global Delete Confirmation Modal */}
       {showDeleteModal && (
@@ -175,7 +287,7 @@ function App() {
           </div>
         </div>
       )}
-    </div>
+    </MainLayout>
   );
 }
 
