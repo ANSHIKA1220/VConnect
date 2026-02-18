@@ -29,15 +29,7 @@ function EditProfileModal({ isOpen, onClose, editForm, setEditForm, onSave }) {
             className="w-full p-2 border border-gray-300 rounded-lg text-black"
           />
         </div>
-        <div>
-          <label className="block text-sm font-medium mb-1 text-black">Email</label>
-          <input
-            type="email"
-            value={editForm.email}
-            onChange={(e) => setEditForm({...editForm, email: e.target.value})}
-            className="w-full p-2 border border-gray-300 rounded-lg text-black"
-          />
-        </div>
+        
         <div>
           <label className="block text-sm font-medium mb-1 text-black">About</label>
           <textarea

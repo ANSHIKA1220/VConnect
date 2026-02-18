@@ -1,5 +1,4 @@
 /* ================= THEME VARIABLES ================= */
-
 :root {
   --bg-main: #f5f7fb;
   --bg-card: #ffffff;
@@ -40,17 +39,9 @@ body.dark-mode {
 
 #root {
   width: 100%;
-
   min-height: 100vh;
-  background: var(--bg-main);
-  color: var(--text-primary);
-  height: 100vh;
-  height: 100dvh;
   margin: 0;
   padding: 0;
-  text-align: left;
-  display: flex;
-
 }
 
 /* ================= MODAL ================= */
