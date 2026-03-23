@@ -66,20 +66,28 @@ function Profile() {
 
       <div className="px-4 lg:px-8 py-6 lg:py-8 space-y-4 lg:space-y-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-          <AboutSection bio={profileData.bio} />
-          <InterestsSection 
-            interests={profileData.interests} 
-            onRemove={handleRemoveInterest}
-          />
+          <AboutSection 
+  bio={profileData.bio} 
+  onEdit={() => setEditDialogOpen(true)} 
+/>
+<InterestsSection 
+  interests={profileData.interests} 
+  onRemove={handleRemoveInterest}
+  onEdit={() => setEditDialogOpen(true)}
+/>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-          <ActivitySection stats={profileData.activity} />
+          <ActivitySection 
+  stats={profileData.activity} 
+   
+/>
           <SocialLinksSection 
-            links={profileData.socialLinks} 
-            onAddClick={() => setAddSocialLinkDialogOpen(true)}
-            onRemove={handleRemoveSocialLink}
-          />
+  links={profileData.socialLinks} 
+  onAddClick={() => setAddSocialLinkDialogOpen(true)}
+  onRemove={handleRemoveSocialLink}
+  onEdit={() => setAddSocialLinkDialogOpen(true)}
+/>
         </div>
       </div>
 

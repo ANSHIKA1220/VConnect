@@ -1,7 +1,16 @@
-function InterestsSection({ interests, onRemove }) {
+import { Pencil } from "lucide-react";
+function InterestsSection({ interests, onRemove ,onEdit}) {
   return (
     <div className="bg-card rounded-2xl p-5 shadow-card">
-      <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Interests</h2>
+      <div className="flex justify-between items-center mb-3">
+  <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+    Interests
+  </h2>
+
+  <button onClick={onEdit} className="p-1 rounded-md hover:bg-muted hover:scale-110 transition">
+    <Pencil size={16} className="text-muted-foreground" />
+  </button>
+</div>
       <div className="flex flex-wrap gap-2">
         {interests.map((interest, index) => (
           <span key={index} className="group cursor-pointer hover:opacity-80 transition-opacity inline-flex items-center px-3 py-1 rounded-full text-sm bg-secondary text-foreground">
