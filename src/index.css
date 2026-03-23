@@ -34,12 +34,9 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
-  height: 100vh;
-  height: 100dvh;
-  /* Use dynamic viewport height for mobile */
-  overflow: hidden;
+  min-height: 100vh;
+  overflow-y: auto;  /* ← allows vertical scrolling */
 }
-
 #root {
   height: 100%;
 }

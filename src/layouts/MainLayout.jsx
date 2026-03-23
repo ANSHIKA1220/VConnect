@@ -1,20 +1,22 @@
 import SideNavigation from '../components/layout/SideNavigation';
+import Navbar from '../components/layout/Navbar';
 
 function MainLayout({ children }) {
   return (
     <div>
-
       {/* Fixed Sidebar */}
       <SideNavigation />
 
-      {/* Page Area */}
-      <div className="ml-20 min-h-screen">
-        
-        <div className="p-6">
+      {/* Main area pushed right of sidebar */}
+      <div style={{ marginLeft: "224px" }}>
+        {/* Navbar */}
+        <Navbar />
+
+        {/* Content */}
+        <div style={{ padding: "24px" }}>
           {children}
         </div>
       </div>
-
     </div>
   );
 }
