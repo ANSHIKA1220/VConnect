@@ -1,5 +1,4 @@
 import SideNavigation from '../components/layout/SideNavigation';
-import Navbar from '../components/layout/Navbar';
 
 function MainLayout({ children }) {
   return (
@@ -9,9 +8,9 @@ function MainLayout({ children }) {
       <SideNavigation />
 
       {/* Page Area */}
-      <div style={{ marginLeft: "224px", minHeight: "100vh" }}>
-        <Navbar />
-        <div style={{ padding: "24px" }}>
+      <div className="ml-20 min-h-screen">
+        
+        <div className="p-6">
           {children}
         </div>
       </div>
