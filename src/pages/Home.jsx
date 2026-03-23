@@ -1,43 +1,51 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import { Plus, MessageSquare, ThumbsUp, ArrowRight } from "lucide-react";
+import RightPanel from "../components/layout/RightPanel";
+import { Plus, MessageSquare, ThumbsUp } from "lucide-react";
+
+const COMMENTS_PREVIEW = 3;
+
+const sampleComments = [
+  { id: 1, author: "Mark T.", text: "Great question! I'd also suggest using Fibonacci heaps for better amortized performance." },
+  { id: 2, author: "Priya S.", text: "The Min-Heap approach is O((V+E) log V) which is optimal for sparse graphs." },
+  { id: 3, author: "James K.", text: "Don't forget to handle disconnected graphs!" },
+  { id: 4, author: "Liu W.", text: "Python's heapq module makes this straightforward to implement." },
+  { id: 5, author: "Aisha R.", text: "Great point about using adjacency lists over matrices here." },
+];
 
 export default function Home() {
-  const navigate = useNavigate();
   const initial = useMemo(() => ([
     {
       id: 1,
       author: "Alex Johnson",
       avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
       timeAgo: "posted 2h ago",
-      category: "Computer Science",
+      category: "DSA",
       title: "How do I efficiently implement Dijkstra's algorithm?",
       body: "The best approach is to use a priority queue (Min-Heap)...",
       likes: 21,
-      comments: 12,
-      liked: false
+      liked: false,
+      comments: sampleComments,
     },
     {
       id: 2,
       author: "Sarah Williams",
       avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop",
       timeAgo: "posted 5h ago",
-      category: "Organic Chemistry",
+      category: "Placements",
       title: "Tips for memorizing functional groups for the upcoming midterm?",
       body: "I found that drawing them repeatedly and using mnemonic devices really helps. Try creating flashcards for each group and practicing daily.",
       likes: 21,
-      comments: 12,
-      liked: false
+      liked: false,
+      comments: sampleComments.slice(0, 2),
     }
   ]), []);
 
   const [askText, setAskText] = useState("");
   const [feed, setFeed] = useState(initial);
-  const [activeCommentId, setActiveCommentId] = useState(null);
-  const [commentText, setCommentText] = useState("");
-
-  const filtered = feed;
+  const [commentText, setCommentText] = useState({});
+  const [expandedComments, setExpandedComments] = useState({});
+  const [selectedTopic, setSelectedTopic] = useState(null);
 
   const handleAsk = () => {
     const text = askText.trim();
@@ -51,8 +59,8 @@ export default function Home() {
       title: text.length > 80 ? text.slice(0, 77) + "..." : text,
       body: "",
       likes: 0,
-      comments: 0,
-      liked: false
+      liked: false,
+      comments: [],
     };
     setFeed(prev => [newItem, ...prev]);
     setAskText("");
@@ -66,96 +74,127 @@ export default function Home() {
     }));
   };
 
-  const openComments = (id) => {
-    setActiveCommentId(id);
-  };
-
   const submitComment = (id) => {
-    const text = commentText.trim();
+    const text = (commentText[id] || "").trim();
     if (!text) return;
-    setFeed(prev => prev.map(item => item.id === id ? { ...item, comments: item.comments + 1 } : item));
-    setCommentText("");
-    setActiveCommentId(null);
+    const newComment = { id: Date.now(), author: "You", text };
+    setFeed(prev => prev.map(item =>
+      item.id === id ? { ...item, comments: [...item.comments, newComment] } : item
+    ));
+    setCommentText(prev => ({ ...prev, [id]: "" }));
   };
 
-  const handleSeeMore = (item) => {
-    navigate(`/question/${item.id}`, { state: item });
-  };
+  const filtered = feed.filter(item => !selectedTopic || item.category === selectedTopic);
 
   return (
     <MainLayout>
-      <div className="space-y-6">
-        <div className="flex items-center gap-3 bg-card border border-border rounded-full px-4 py-2">
-          <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-            <MessageSquare className="text-primary" size={18} />
-          </div>
-          <input
-            className="flex-1 bg-transparent outline-none text-foreground placeholder:text-muted-foreground"
-            placeholder="Ask a question to your mentors..."
-            value={askText}
-            onChange={(e) => setAskText(e.target.value)}
-          />
-          <button
-            onClick={handleAsk}
-            className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition"
-            aria-label="Post question"
-          >
-            <Plus size={18} />
-          </button>
-        </div>
+      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
 
-        <div className="space-y-5">
-          {filtered.map(item => (
-            <div key={item.id} className="bg-card border border-border rounded-2xl p-5 shadow-card">
-              <div className="flex items-center gap-3">
-                <img src={item.avatar} alt={item.author} className="w-9 h-9 rounded-full object-cover" />
-                <div>
-                  <div className="text-sm font-semibold text-foreground">{item.author}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {item.timeAgo} in <span className="text-primary font-medium">{item.category}</span>
+        {/* Center Feed */}
+        <div className="flex-1 min-w-0 max-w-[640px] space-y-5">
+
+
+
+          {/* Active filter pill */}
+          {selectedTopic && (
+            <div className="flex items-center gap-2">
+              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-medium">
+                #{selectedTopic}
+              </span>
+              <button
+                onClick={() => setSelectedTopic(null)}
+                className="text-xs text-muted-foreground hover:text-foreground"
+              >
+                ✕ Clear
+              </button>
+            </div>
+          )}
+
+          {/* Feed */}
+          {filtered.length === 0 ? (
+            <div className="text-center text-muted-foreground py-10">
+              No questions in this topic yet.
+            </div>
+          ) : filtered.map(item => {
+            const isExpanded = expandedComments[item.id];
+            const visibleComments = isExpanded ? item.comments : item.comments.slice(0, COMMENTS_PREVIEW);
+            const hasMore = item.comments.length > COMMENTS_PREVIEW;
+
+            return (
+              <div key={item.id} className="bg-card border border-border rounded-2xl p-5 shadow-card">
+                <div className="flex items-center gap-3">
+                  <img src={item.avatar} alt={item.author} className="w-9 h-9 rounded-full object-cover" />
+                  <div>
+                    <div className="text-sm font-semibold text-foreground">{item.author}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {item.timeAgo} in <span className="text-primary font-medium">{item.category}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="mt-4">
-                <div className="text-lg font-semibold text-foreground">{item.title}</div>
-                {item.body && <p className="mt-2 text-muted-foreground">{item.body}</p>}
-              </div>
+                <div className="mt-4">
+                  <div className="text-base font-semibold text-foreground">{item.title}</div>
+                  {item.body && <p className="mt-1 text-sm text-muted-foreground">{item.body}</p>}
+                </div>
 
-              <div className="mt-4 flex items-center justify-between">
-                <div className="flex items-center gap-5 text-muted-foreground">
+                <div className="mt-4 flex items-center gap-5 text-muted-foreground">
                   <button className="flex items-center gap-2" onClick={() => handleLike(item.id)}>
-                    <ThumbsUp size={16} className={item.liked ? "text-primary" : "text-muted-foreground"} />
+                    <ThumbsUp size={15} className={item.liked ? "text-primary" : "text-muted-foreground"} />
                     <span className="text-sm">{item.likes}</span>
                   </button>
-                  <button className="flex items-center gap-2" onClick={() => openComments(item.id)}>
-                    <MessageSquare size={16} className="text-muted-foreground" />
-                    <span className="text-sm">{item.comments}</span>
-                  </button>
+                  <span className="flex items-center gap-1 text-sm">
+                    <MessageSquare size={15} />
+                    {item.comments.length}
+                  </span>
                 </div>
-                <button onClick={() => handleSeeMore(item)} className="text-sm text-primary font-medium flex items-center gap-1">
-                  See More <ArrowRight size={14} className="text-primary" />
-                </button>
-              </div>
-              {activeCommentId === item.id && (
-                <div className="mt-4 flex items-center gap-2">
+
+                {item.comments.length > 0 && (
+                  <div className="mt-4 space-y-3 border-t border-border pt-3">
+                    {visibleComments.map(c => (
+                      <div key={c.id} className="flex gap-2 text-sm">
+                        <span className="font-medium text-foreground whitespace-nowrap">{c.author}</span>
+                        <span className="text-muted-foreground">{c.text}</span>
+                      </div>
+                    ))}
+                    {hasMore && (
+                      <button
+                        className="text-xs text-primary font-medium"
+                        onClick={() => setExpandedComments(prev => ({ ...prev, [item.id]: !isExpanded }))}
+                      >
+                        {isExpanded ? "Show less" : `Read ${item.comments.length - COMMENTS_PREVIEW} more comments`}
+                      </button>
+                    )}
+                  </div>
+                )}
+
+                <div className="mt-3 flex items-center gap-2">
                   <input
-                    className="flex-1 bg-card border border-border rounded-md px-3 py-2 text-foreground placeholder:text-muted-foreground outline-none"
-                    placeholder="Write a comment..."
-                    value={commentText}
-                    onChange={(e) => setCommentText(e.target.value)}
+                    className="flex-1 bg-background border border-border rounded-full px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                    placeholder="Add a comment..."
+                    value={commentText[item.id] || ""}
+                    onChange={(e) => setCommentText(prev => ({ ...prev, [item.id]: e.target.value }))}
+                    onKeyDown={(e) => e.key === "Enter" && submitComment(item.id)}
                   />
                   <button
-                    className="px-3 py-2 rounded-md bg-primary text-primary-foreground hover:opacity-90 transition"
+                    className="px-3 py-1.5 rounded-full bg-primary text-primary-foreground text-sm hover:opacity-90 transition"
                     onClick={() => submitComment(item.id)}
                   >
                     Post
                   </button>
                 </div>
-              )}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
+
+        {/* Right Panel - only on Home */}
+        <div style={{ width: "288px", flexShrink: 0, position: "sticky", top: "24px" }}>
+          <RightPanel
+            selectedTopic={selectedTopic}
+            onTopicSelect={setSelectedTopic}
+          />
+        </div>
+
       </div>
     </MainLayout>
   );
