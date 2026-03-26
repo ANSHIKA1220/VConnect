@@ -88,7 +88,7 @@ export default function Home() {
 
   return (
     <MainLayout>
-      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
+      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", justifyContent: "center" }}>
 
         {/* Center Feed */}
         <div className="flex-1 min-w-0 max-w-[640px] space-y-5">
@@ -121,7 +121,7 @@ export default function Home() {
             const hasMore = item.comments.length > COMMENTS_PREVIEW;
 
             return (
-              <div key={item.id} className="bg-card border border-border rounded-2xl p-5 shadow-card">
+              <div key={item.id} className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-5 shadow-sm">
                 <div className="flex items-center gap-3">
                   <img src={item.avatar} alt={item.author} className="w-9 h-9 rounded-full object-cover" />
                   <div>

@@ -20,13 +20,13 @@ function AddSocialLinkModal({ isOpen, onClose, onAdd }) {
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} title="Add Social Link">
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div>
-          <label className="block text-sm font-medium mb-1 text-black">Type</label>
+          <label className="block text-sm font-semibold mb-2 text-foreground/70 tracking-wide">Type</label>
           <select
             value={socialForm.type}
             onChange={(e) => setSocialForm({...socialForm, type: e.target.value})}
-            className="w-full p-2 border border-gray-300 rounded-lg text-black"
+            className="w-full p-3 bg-muted/50 border border-border rounded-xl text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none appearance-none cursor-pointer"
           >
             <option value="website">Website</option>
             <option value="github">GitHub</option>
@@ -36,36 +36,36 @@ function AddSocialLinkModal({ isOpen, onClose, onAdd }) {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-black">URL</label>
+          <label className="block text-sm font-semibold mb-2 text-foreground/70 tracking-wide">URL</label>
           <input
             type="url"
             placeholder="https://..."
             value={socialForm.url}
             onChange={(e) => setSocialForm({...socialForm, url: e.target.value})}
-            className="w-full p-2 border border-gray-300 rounded-lg text-black"
+            className="w-full p-3 bg-muted/50 border border-border rounded-xl text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm"
           />
         </div>
         <div>
-          <label className="block text-sm font-medium mb-1 text-black">Display Label</label>
+          <label className="block text-sm font-semibold mb-2 text-foreground/70 tracking-wide">Display Label</label>
           <input
             type="text"
             placeholder="e.g., My Portfolio"
             value={socialForm.label}
             onChange={(e) => setSocialForm({...socialForm, label: e.target.value})}
-            className="w-full p-2 border border-gray-300 rounded-lg text-black"
+            className="w-full p-3 bg-muted/50 border border-border rounded-xl text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm"
           />
         </div>
-        <div className="flex gap-2 pt-4">
+        <div className="flex gap-3 pt-4">
           <button 
             onClick={handleClose} 
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-black"
+            className="flex-1 px-4 py-2.5 border border-border rounded-xl hover:bg-muted text-foreground font-semibold transition-colors"
           >
             Cancel
           </button>
           <button 
             onClick={handleAdd} 
             disabled={!socialForm.url.trim() || !socialForm.label.trim()} 
-            className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 disabled:opacity-50"
+            className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl hover:opacity-90 disabled:opacity-50 font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]"
           >
             Add Link
           </button>

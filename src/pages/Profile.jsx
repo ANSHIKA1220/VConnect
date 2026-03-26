@@ -31,7 +31,8 @@ const [editInterestsOpen, setEditInterestsOpen] = useState(false);
 
   const handleSaveProfile = () => {
     updateProfile(editForm);
-    setEditDialogOpen(false);
+    setEditAboutOpen(false);
+    setEditInterestsOpen(false);
     alert('Profile updated successfully!');
   };
 
@@ -66,12 +67,12 @@ const [editInterestsOpen, setEditInterestsOpen] = useState(false);
         <ProfileHeader
           name={profileData.name}
           email={profileData.email}
-          onEditClick={() => setEditDialogOpen(true)}
+          onEditClick={() => {}}
           onShareClick={() => setShareDialogOpen(true)}
         />
 
         <div className="px-4 lg:px-8 py-6 lg:py-8 space-y-4 lg:space-y-6">
-          <div className="bg-card border border-border rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+          <div className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
             <ResumeCard />
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">

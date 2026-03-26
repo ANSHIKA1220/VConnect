@@ -124,12 +124,14 @@
 /* ... (keep separate rules for date/message styling) ... */
 
 body.dark-mode .chat-content {
-    background-color: #111827; /* Darker gray background */
+    background-color: var(--chat-bg-dark); /* Using the specific blue-gray */
     background-image: url('../assets/image/IMG-20260202-WA0045.jpg');
-    /* Use difference or exclusion blend mode to invert the light image for dark mode */
-    background-blend-mode: difference;
-    opacity: 0.9;
+    /* Use overlay or luminosity to blend the pattern subtly over the blue-gray like in the screenshot */
+    background-blend-mode: soft-light;
+    opacity: 1;
 }
+
+
 
 /* User Input Area */
 .chat-input-area {
@@ -232,6 +234,7 @@ body.dark-mode .chat-content {
     color: white;
     border-bottom-right-radius: 4px;
 }
+
 
 .message-time {
     font-size: 11px;

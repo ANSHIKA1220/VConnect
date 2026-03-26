@@ -7,7 +7,7 @@ function Navbar() {
   const navigate = useNavigate();
 
   return (
-    <header className="bg-card border-b border-border px-4 lg:px-6 py-2 sticky top-0 z-10">
+    <header className="bg-card border-b border-border px-4 lg:px-6 py-2 z-10">
       <div className="flex items-center justify-between relative h-10 w-full">
 
         {/* Left - Search Bar */}

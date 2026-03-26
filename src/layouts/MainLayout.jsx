@@ -3,7 +3,7 @@ import Navbar from '../components/layout/Navbar';
 
 function MainLayout({ children, noPadding = false }) {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', overflow: 'hidden' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', overflow: 'hidden', position: 'fixed', top: 0, left: 0 }}>
       {/* Fixed Sidebar */}
       <SideNavigation />
 
@@ -12,8 +12,15 @@ function MainLayout({ children, noPadding = false }) {
         {/* Navbar */}
         <Navbar />
 
-        {/* Content */}
-        <div className="main-content-area" style={{ padding: noPadding ? "0" : "24px", flex: 1, overflowY: noPadding ? "hidden" : "auto", display: 'flex', flexDirection: 'column', minHeight: 0 }}>
+        {/* Content Area */}
+        <div className="main-content-area" style={{ 
+          padding: noPadding ? "0" : "24px", 
+          flex: 1, 
+          overflowY: "auto", 
+          display: 'flex', 
+          flexDirection: 'column', 
+          minHeight: 0 
+        }}>
           {children}
         </div>
       </div>

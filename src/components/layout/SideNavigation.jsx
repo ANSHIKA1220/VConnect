@@ -6,7 +6,7 @@ function SideNavigation() {
   const navigate = useNavigate();
 
   return (
-    <div className="fixed left-0 top-0 h-full w-56 bg-card border-r border-border z-10 flex flex-col py-6">
+    <div className="fixed left-0 top-0 h-full w-56 bg-[var(--sidebar-bg)] border-r border-border z-10 flex flex-col py-6">
 
       {/* Logo/Brand */}
       <div className="px-4 mb-8 flex items-center gap-3">

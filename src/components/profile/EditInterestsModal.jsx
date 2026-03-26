@@ -17,14 +17,17 @@ function EditInterestsModal({ isOpen, onClose, editForm, setEditForm, onSave }) 
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Edit Interests">
-      <div className="space-y-4">
+      <div className="space-y-5">
         <div className="flex flex-wrap gap-2">
           {editForm.interests.map((interest, index) => (
-            <span key={index} className="group inline-flex items-center px-3 py-1 rounded-full text-sm bg-gray-100 text-gray-800">
+            <span key={index} className="group inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-muted border border-border text-foreground/80 hover:border-primary transition-all">
               {interest.name}
-              <button onClick={() => handleRemoveInterest(index)} className="ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              <button 
+                onClick={() => handleRemoveInterest(index)} 
+                className="ml-2 w-4 h-4 rounded-full flex items-center justify-center bg-foreground/10 hover:bg-red-500 hover:text-white transition-all"
+              >
+                <svg className="w-2.5 h-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
             </span>
@@ -37,19 +40,23 @@ function EditInterestsModal({ isOpen, onClose, editForm, setEditForm, onSave }) 
             value={newInterest}
             onChange={(e) => setNewInterest(e.target.value)}
             onKeyPress={(e) => e.key === 'Enter' && handleAddInterest()}
-            className="flex-1 p-2 border border-gray-300 rounded-lg text-black"
+            className="flex-1 p-3 bg-muted/50 border border-border rounded-xl text-foreground focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none text-sm"
           />
-          <button onClick={handleAddInterest} disabled={!newInterest.trim()} className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600 disabled:opacity-50">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          <button 
+            onClick={handleAddInterest} 
+            disabled={!newInterest.trim()} 
+            className="w-12 h-12 flex items-center justify-center bg-primary text-white rounded-xl hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-primary/20 active:scale-[0.98]"
+          >
+            <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
             </svg>
           </button>
         </div>
-        <div className="flex gap-2 pt-2">
-          <button onClick={onClose} className="flex-1 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 text-black">
+        <div className="flex gap-3 pt-4">
+          <button onClick={onClose} className="flex-1 px-4 py-2.5 border border-border rounded-xl hover:bg-muted text-foreground font-semibold transition-colors">
             Cancel
           </button>
-          <button onClick={onSave} className="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-blue-600">
+          <button onClick={onSave} className="flex-1 px-4 py-2.5 bg-primary text-white rounded-xl hover:opacity-90 font-bold shadow-lg shadow-primary/20 transition-all active:scale-[0.98]">
             Save Changes
           </button>
         </div>

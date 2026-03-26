@@ -1,68 +1,152 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
-  --bg-color: #F8F9FD;
-  --sidebar-width: 80px;
-  --message-list-width: 380px;
-  --primary-blue: #3182CE;
-  /* Brighter blue from screenshot */
-  --primary-blue-light: #EBF8FF;
-  --text-primary: #1A202C;
-  --text-secondary: #718096;
-  --border-color: #EDF2F7;
+  /* Subtle Blue Light Mode Palette - Polished */
+  --background: 210 40% 98%;
+  --foreground: 222 47% 11%;
+  
+  --primary: 217 91% 60%; /* #3B82F6 (Logo Blue) */
+  --primary-foreground: 0 0% 100%;
+  
+  --card: 0 0% 100%;
+  --card-foreground: 222 47% 11%;
+  
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%;
+  
+  --accent: 210 100% 96%;
+  --accent-foreground: 217 91% 60%;
+  
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 217 91% 60%;
+  
+  --radius: 0.75rem;
+
+  /* Component Variable Mappings (Light) */
+  --bg-card: hsl(var(--card));
+  --text-primary: hsl(var(--foreground));
+  --text-secondary: hsl(var(--muted-foreground));
+  --hover-bg: hsl(var(--muted));
+  --border-color: hsl(var(--border));
+
+  /* Specific UI Variables */
+  --primary-blue: #3B82F6;
+  --bg-color: #f1f5f9; /* Increased contrast from #F8F9FD to #f1f5f9 */
   --white: #ffffff;
-  --hover-bg: #F7FAFC;
-  --chat-bg: rgba(219, 234, 254, 0.3);
+  --panel-accent-bg: #E0F2FE;
+  --sidebar-bg: #f5fafd; /* Subtle blue-ish off-white */
+  --active-blue: #EBF8FF; /* Light blue for active chat */
+  --bg-main: #ffffff; /* Chat content background */
+  --bg-soft: #f1f5f9; /* Subtle gray-blue for inputs */
+  --bubble-received: #f1f5f9;
+  --bubble-sent: #3b82f6;
+  --shadow-card: 0 4px 20px -4px rgba(59, 130, 246, 0.05);
+  --shadow-card-hover: 0 8px 30px -4px rgba(59, 130, 246, 0.1);
+  --gradient-header: linear-gradient(90deg, #3B82F610 0%, #3B82F605 100%);
 }
 
-/* Dark Mode Variables */
-body.dark-mode {
-  --bg-color: #040d1a;
-  --text-primary: #E2E8F0;
-  --text-secondary: #94A3B8;
-  --border-color: #0a1929;
-  --white: #040d1a;
-  --hover-bg: #0a1929;
-  --chat-bg: #1F3B4D;
+/* Premium Dark Mode - Deep Slate Palette */
+.dark, .dark-mode {
+  --background: 222 47% 6%; /* #0b0f1a - Deepest Background */
+  --foreground: 210 40% 98%; /* Off-white */
+  
+  --card: 217 33% 12%; /* #151e2d - Card Surface */
+  --card-foreground: 210 40% 98%;
+  
+  --popover: 217 33% 12%;
+  --popover-foreground: 210 40% 98%;
+  
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  
+  --muted: 217 33% 17%; /* Lighter Slate for hovers */
+  --muted-foreground: 215 20% 65%; /* Soft Gray */
+  
+  --accent: 217 33% 17%;
+  --accent-foreground: 217 91% 60%;
+  
+  --border: 222 25% 20%; /* Contrasted border */
+  --input: 222 25% 15%;
+  
+  /* Hex Overrides & Component Variable Mappings (Dark) */
+  --bg-color: #0b0f1a;
+  --white: #151e2d; 
+  --panel-accent-bg: #0f172a; 
+  --sidebar-bg: #0b0f1a; /* Deepest slate for framing */
+  --border-color: #2e3b4e;
+  --bg-card: #151e2d;
+  --text-primary: #f1f5f9;
+  --text-secondary: #94a3b8;
+  --hover-bg: #1e293b;
+  --active-blue: #1e293b; /* Maintain consistency in dark mode */
+  --bg-main: #0b0f1a; 
+  --bg-soft: #0d1b2a;
+  --chat-bg-dark: #2d3a4b; /* Specific blue-gray from screenshot */
+  --bubble-received: #1e2a3b; /* Refined received bubble color */
+  --bubble-sent: #3b82f6; /* Vibrant blue from screenshot */
+  
+  --shadow-card: 0 8px 30px -4px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(59, 130, 246, 0.05);
+  --shadow-card-hover: 0 12px 40px -4px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(59, 130, 246, 0.1);
+  --gradient-header: linear-gradient(90deg, #3B82F620 0%, #3B82F610 100%);
 }
 
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  border-color: hsl(var(--border) / 0.5); /* Semi-transparent borders */
 }
 
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-primary);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
   height: 100vh;
-  overflow: hidden;  /* Force disable entire page scroll to fix layout issues */
+  overflow: hidden;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
 #root {
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
-.app-container {
-  display: flex;
-  height: 100%;
-  width: 100%;
+/* Utility Class Re-definitions */
+@layer utilities {
+  .bg-background { background-color: hsl(var(--background)); }
+  .bg-card { background-color: var(--bg-card); }
+  .bg-primary { background-color: hsl(var(--primary)); }
+  .bg-muted { background-color: var(--hover-bg); }
+  .text-foreground { color: var(--text-primary); }
+  .text-primary { color: hsl(var(--primary)); }
+  .text-muted-foreground { color: var(--text-secondary); }
+  .border-border { border-color: var(--border-color); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+  .shadow-card-hover { box-shadow: var(--shadow-card-hover); }
 }
 
-/* Scrollbar styling */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
-  background: #CBD5E0;
+  background: rgba(59, 130, 246, 0.2);
   border-radius: 3px;
 }
-
 ::-webkit-scrollbar-thumb:hover {
-  background: #A0AEC0;
+  background: rgba(59, 130, 246, 0.4);
 }

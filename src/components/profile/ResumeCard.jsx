@@ -30,7 +30,7 @@ function ResumeCard() {
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-4 shadow-sm flex items-center justify-between">
+    <div className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-4 shadow-sm flex items-center justify-between">
 
       {/* Left Section */}
       <div className="flex items-center gap-4">
