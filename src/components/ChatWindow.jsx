@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, Info, Plus, Send, File, Image as ImageIcon, Camera, FileText, X, Trash2 } from 'lucide-react';
 import './ChatWindow.css';
 
-const ChatWindow = ({ chat, messages, onBack, onDeleteChat, onSendMessage }) => {
+const ChatWindow = ({ chat, messages, onBack, onDeleteChat, onSendMessage, onProfileClick }) => {
     const [message, setMessage] = useState('');
     const [showAttachments, setShowAttachments] = useState(false);
     const [showInfo, setShowInfo] = useState(false);
@@ -78,7 +78,7 @@ const ChatWindow = ({ chat, messages, onBack, onDeleteChat, onSendMessage }) => 
                         <button className="back-button" onClick={handleBack}>
                             <ArrowLeft size={20} color="#718096" />
                         </button>
-                        <div className="header-user-info">
+                        <div className="header-user-info" onClick={() => onProfileClick && onProfileClick()} style={{ cursor: 'pointer' }}>
                             <div className="header-avatar-container">
                                 <img src={chat.avatar} alt={chat.name} className="header-avatar" />
                             </div>
@@ -200,21 +200,9 @@ const ChatWindow = ({ chat, messages, onBack, onDeleteChat, onSendMessage }) => 
                             </div>
 
                             <div className="media-grid-content">
-                                {mediaTab === 'media' && (
-                                    <div className="media-preview-grid large">
-                                        <div className="media-item blue"></div>
-                                        <div className="media-item purple"></div>
-                                        <div className="media-item pink"></div>
-                                        <div className="media-item green"></div>
-                                        <div className="media-item yellow"></div>
-                                        <div className="media-item red"></div>
-                                        <div className="media-item indigo"></div>
-                                        <div className="media-item teal"></div>
-                                        <div className="media-item orange"></div>
-                                    </div>
-                                )}
-                                {mediaTab === 'docs' && <div className="empty-state">No documents</div>}
-                                {mediaTab === 'links' && <div className="empty-state">No links</div>}
+                                {mediaTab === 'media' && <div className="empty-state">Coming soon</div>}
+                                {mediaTab === 'docs' && <div className="empty-state">Coming soon</div>}
+                                {mediaTab === 'links' && <div className="empty-state">Coming soon</div>}
                             </div>
                         </div>
                     ) : (
@@ -228,7 +216,14 @@ const ChatWindow = ({ chat, messages, onBack, onDeleteChat, onSendMessage }) => 
                             </div>
 
                             <div className="contact-profile-section">
-                                <img src={chat.avatar} alt={chat.name} className="contact-avatar-large" />
+                                <img
+                                    src={chat.avatar}
+                                    alt={chat.name}
+                                    className="contact-avatar-large"
+                                    onClick={() => onProfileClick && onProfileClick()}
+                                    style={{ cursor: 'pointer' }}
+                                    title="View profile"
+                                />
                                 <h2 className="contact-name-large">{chat.name}</h2>
                             </div>
 
@@ -243,11 +238,7 @@ const ChatWindow = ({ chat, messages, onBack, onDeleteChat, onSendMessage }) => 
                                         <label>MEDIA, LINKS, AND DOCS</label>
                                         <button className="see-all-btn" onClick={() => setShowMediaGallery(true)}>See all</button>
                                     </div>
-                                    <div className="media-preview-grid">
-                                        <div className="media-item blue"></div>
-                                        <div className="media-item purple"></div>
-                                        <div className="media-item pink"></div>
-                                    </div>
+                                    <div className="empty-state" style={{ marginTop: '12px' }}>Coming soon</div>
                                 </div>
 
                                 <div className="contact-actions-inline">

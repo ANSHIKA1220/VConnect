@@ -1,15 +1,59 @@
-import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { GraduationCap, Mail, Lock, ArrowLeft, ShieldCheck } from 'lucide-react';
 
 const Login = () => {
+  const [step, setStep] = useState('EMAIL'); // 'EMAIL' or 'OTP'
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState(['', '', '', '', '', '']);
+  const [timer, setTimer] = useState(30);
+  const otpInputs = useRef([]);
   const navigate = useNavigate();
 
-  const handleLogin = (event) => {
-    event.preventDefault();
-    localStorage.setItem('vconnect-auth', 'true');
-    navigate('/', { replace: true });
+  // Timer logic for OTP
+  useEffect(() => {
+    let interval;
+    if (step === 'OTP' && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [step, timer]);
+
+  const handleEmailSubmit = (e) => {
+    e.preventDefault();
+    if (email) {
+      setStep('OTP');
+      setTimer(30);
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (isNaN(value)) return;
+    const newOtp = [...otp];
+    newOtp[index] = value.substring(value.length - 1);
+    setOtp(newOtp);
+
+    // Auto-focus next input
+    if (value && index < 5) {
+      otpInputs.current[index + 1].focus();
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      otpInputs.current[index - 1].focus();
+    }
+  };
+
+  const handleVerify = (e) => {
+    e.preventDefault();
+    const otpValue = otp.join('');
+    if (otpValue.length === 6) {
+      localStorage.setItem('vconnect-auth', 'true');
+      navigate('/', { replace: true });
+    }
   };
 
   const styles = {
@@ -22,230 +66,367 @@ const Login = () => {
     },
     leftSide: {
       width: '50%',
-      background: 'linear-gradient(135deg, #5483B3 0%, #6a9ac4 100%)',
+      background: 'linear-gradient(135deg, #2C5282 0%, #3182CE 100%)',
       padding: '60px 40px',
       color: 'white',
-      position: 'relative',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center',
     },
-    icon: {
-      width: '60px',
-      height: '60px',
-      background: 'rgba(255, 255, 255, 0.2)',
-      borderRadius: '15px',
+    logoCircle: {
+      width: '100px',
+      height: '100px',
+      background: 'white',
+      borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: '40px',
+      marginBottom: '24px',
+      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
     },
-    iconSvg: {
-      width: '30px',
-      height: '30px',
-      fill: 'white',
+    brandTitle: {
+      fontSize: '42px',
+      fontWeight: '800',
+      marginBottom: '8px',
+      letterSpacing: '-1px',
     },
-    h1: {
-      fontSize: '48px',
-      marginBottom: '10px',
-    },
-    subtitle: {
-      fontSize: '20px',
-      marginBottom: '30px',
+    brandSubtitle: {
+      fontSize: '18px',
       opacity: 0.9,
-    },
-    description: {
-      fontSize: '14px',
-      lineHeight: 1.6,
-      opacity: 0.8,
+      fontWeight: '400',
     },
     rightSide: {
       width: '50%',
-      padding: '60px 50px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#f8fafc',
+      padding: '40px',
+    },
+    welcomeCard: {
+      width: '100%',
+      maxWidth: '440px',
+      background: 'white',
+      borderRadius: '28px',
+      padding: '48px 40px',
+      boxShadow: '0 20px 50px rgba(0, 0, 0, 0.05)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
       position: 'relative',
     },
-    loginHeaderH2: {
-      fontSize: '32px',
-      color: '#111827',
+    backButton: {
+      position: 'absolute',
+      left: '24px',
+      top: '24px',
+      width: '44px',
+      height: '44px',
+      borderRadius: '50%',
+      border: '1px solid #e2e8f0',
+      background: 'white',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      cursor: 'pointer',
+      color: '#64748b',
+      transition: 'all 0.2s',
+    },
+    iconCircle: {
+      width: '64px',
+      height: '64px',
+      borderRadius: '50%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      marginBottom: '24px',
+    },
+    mailCircle: { background: '#eff6ff' },
+    lockCircle: { background: '#f0fdf4' },
+    header: {
+      fontSize: '28px',
+      fontWeight: 'bold',
+      color: '#0f172a',
       marginBottom: '8px',
+      textAlign: 'center',
     },
-    loginHeaderP: {
-      fontSize: '13px',
-      color: '#6b7280',
-      marginBottom: '30px',
+    subtext: {
+      fontSize: '15px',
+      color: '#64748b',
+      marginBottom: '32px',
+      textAlign: 'center',
+      lineHeight: '1.5',
     },
-    formGroup: {
-      marginBottom: '20px',
-    },
-    label: {
+    emailHighlight: {
+      color: '#3182CE',
+      fontWeight: '500',
       display: 'block',
-      fontSize: '14px',
-      color: '#374151',
-      marginBottom: '8px',
+      marginTop: '4px',
     },
-    inputWrapper: {
+    form: { width: '100%' },
+    inputGroup: {
       position: 'relative',
+      marginBottom: '24px',
     },
     inputIcon: {
       position: 'absolute',
-      left: '15px',
+      left: '16px',
       top: '50%',
       transform: 'translateY(-50%)',
-      width: '18px',
-      height: '18px',
-      fill: '#9ca3af',
+      color: '#94a3b8',
     },
     input: {
       width: '100%',
-      padding: '14px 45px',
-      border: '1px solid #e5e7eb',
-      borderRadius: '10px',
-      fontSize: '14px',
-      background: '#f9fafb',
+      padding: '16px 16px 16px 48px',
+      background: '#f8fafc',
+      border: '1px solid #e2e8f0',
+      borderRadius: '16px',
+      fontSize: '15px',
+      color: '#1e293b',
       outline: 'none',
+      transition: 'all 0.2s',
       boxSizing: 'border-box',
     },
-    forgotPassword: {
-      textAlign: 'right',
-      marginBottom: '25px',
+    otpContainer: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      gap: '8px',
+      marginBottom: '32px',
     },
-    forgotPasswordLink: {
-      color: '#5483B3',
-      textDecoration: 'none',
-      fontSize: '13px',
+    otpInput: {
+      width: '54px',
+      height: '60px',
+      background: '#f8fafc',
+      border: '1px solid #e2e8f0',
+      borderRadius: '14px',
+      fontSize: '24px',
+      fontWeight: 'bold',
+      textAlign: 'center',
+      color: '#1e293b',
+      outline: 'none',
+      transition: 'all 0.2s',
     },
-    loginBtn: {
+    primaryBtn: {
       width: '100%',
-      padding: '16px',
-      background: 'linear-gradient(135deg, #5483B3 0%, #4a7199 100%)',
+      padding: '18px',
+      background: '#3182CE',
       color: 'white',
       border: 'none',
-      borderRadius: '10px',
+      borderRadius: '16px',
       fontSize: '16px',
-      fontWeight: 'bold',
+      fontWeight: '600',
       cursor: 'pointer',
-      marginBottom: '20px',
+      transition: 'all 0.2s',
+      boxShadow: '0 4px 12px rgba(49, 130, 206, 0.3)',
+      marginBottom: '24px',
     },
-    signupLink: {
-      textAlign: 'center',
-      fontSize: '13px',
-      color: '#6b7280',
+    linkGroup: {
+      width: '100%',
+      display: 'flex',
+      justifyContent: 'space-between',
+      marginBottom: '16px',
+      fontSize: '14px',
     },
-    signupLinkA: {
-      color: '#5483B3',
+    link: {
+      color: '#64748b',
       textDecoration: 'none',
-      fontWeight: 'bold',
+      cursor: 'pointer',
+      fontWeight: '500',
     },
-    footer: {
-      textAlign: 'center',
-      marginTop: '30px',
-      fontSize: '11px',
-      color: '#9ca3af',
+    resendLink: {
+      color: '#3182CE',
     },
+    timerText: {
+      fontSize: '13px',
+      color: '#94a3b8',
+      marginBottom: '24px',
+    },
+    secureFooter: {
+      width: '100%',
+      padding: '12px',
+      background: '#f8fafc',
+      borderRadius: '12px',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '10px',
+      fontSize: '12px',
+      color: '#64748b',
+    },
+    divider: {
+      width: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      marginBottom: '24px',
+      color: '#94a3b8',
+      fontSize: '13px',
+      fontWeight: '500',
+    },
+    dividerLine: { flex: 1, height: '1px', background: '#e2e8f0' },
+    dividerText: { margin: '0 16px' },
+    googleBtn: {
+      width: '100%',
+      padding: '14px',
+      background: 'white',
+      border: '1px solid #e2e8f0',
+      borderRadius: '14px',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '12px',
+      color: '#1e293b',
+      fontSize: '15px',
+      fontWeight: '500',
+      cursor: 'pointer',
+      transition: 'all 0.2s',
+    }
   };
 
   return (
     <div style={styles.container}>
+      {/* 1st Half: Branding */}
       <div style={styles.leftSide}>
-        <div style={styles.icon}>
-          <svg style={styles.iconSvg} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
-          </svg>
+        <div style={styles.logoCircle}>
+          <GraduationCap size={56} color="#3182CE" fill="#3182CE" fillOpacity={0.1} />
         </div>
-        <h1 style={styles.h1}>Hello!</h1>
-        <div style={styles.subtitle}>Welcome Student</div>
-        <div style={styles.description}>
-          Access your courses, assignments, and grades in one place.
-        </div>
+        <h1 style={styles.brandTitle}>VConnect</h1>
+        <p style={styles.brandSubtitle}>Connect. Learn. Grow Together.</p>
       </div>
 
+      {/* 2nd Half: Interactive Form */}
       <div style={styles.rightSide}>
-        <div>
-          <h2 style={styles.loginHeaderH2}>Login</h2>
-          <p style={styles.loginHeaderP}>Please enter your credentials to access your portal</p>
+        <div style={styles.welcomeCard}>
+          {step === 'OTP' && (
+            <button 
+              style={styles.backButton} 
+              onClick={() => setStep('EMAIL')}
+              onMouseOver={(e) => { e.currentTarget.style.background = '#f8fafc'; }}
+              onMouseOut={(e) => { e.currentTarget.style.background = 'white'; }}
+            >
+              <ArrowLeft size={20} />
+            </button>
+          )}
+
+          {step === 'EMAIL' ? (
+            <>
+              <div style={{...styles.iconCircle, ...styles.mailCircle}}>
+                <Mail size={32} color="#3182CE" />
+              </div>
+              <h2 style={styles.header}>Welcome!</h2>
+              <p style={styles.subtext}>Enter your email address to continue</p>
+
+              <form style={styles.form} onSubmit={handleEmailSubmit}>
+                <div style={styles.inputGroup}>
+                  <Mail size={20} style={styles.inputIcon} />
+                  <input 
+                    type="email" 
+                    placeholder="email@example.com" 
+                    style={styles.input}
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = '#3182CE';
+                      e.target.style.background = 'white';
+                      e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.1)';
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = '#e2e8f0';
+                      e.target.style.background = '#f8fafc';
+                      e.target.style.boxShadow = 'none';
+                    }}
+                    required
+                  />
+                </div>
+
+                <button 
+                  type="submit" 
+                  style={styles.primaryBtn}
+                  onMouseOver={(e) => { e.currentTarget.style.background = '#2C5282'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.background = '#3182CE'; }}
+                >
+                  Continue
+                </button>
+              </form>
+
+              <div style={styles.divider}>
+                <div style={styles.dividerLine}></div>
+                <span style={styles.dividerText}>OR</span>
+                <div style={styles.dividerLine}></div>
+              </div>
+
+              <button type="button" style={styles.googleBtn}>
+                <svg width="20" height="20" viewBox="0 0 24 24">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                <span style={{marginLeft: '12px'}}>Sign in with Google</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <div style={{...styles.iconCircle, ...styles.lockCircle}}>
+                <Lock size={32} color="#22c55e" />
+              </div>
+              <h2 style={styles.header}>Enter OTP</h2>
+              <p style={styles.subtext}>
+                We've sent a 6-digit code to
+                <span style={styles.emailHighlight}>{email}</span>
+              </p>
+
+              <form style={styles.form} onSubmit={handleVerify}>
+                <div style={styles.otpContainer}>
+                  {otp.map((digit, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      maxLength={1}
+                      style={styles.otpInput}
+                      value={digit}
+                      ref={(el) => (otpInputs.current[index] = el)}
+                      onChange={(e) => handleOtpChange(index, e.target.value)}
+                      onKeyDown={(e) => handleKeyDown(index, e)}
+                      onFocus={(e) => {
+                        e.target.style.borderColor = '#3182CE';
+                        e.target.style.background = 'white';
+                        e.target.style.boxShadow = '0 0 0 4px rgba(49, 130, 206, 0.1)';
+                      }}
+                      onBlur={(e) => {
+                        e.target.style.borderColor = '#e2e8f0';
+                        e.target.style.background = '#f8fafc';
+                        e.target.style.boxShadow = 'none';
+                      }}
+                    />
+                  ))}
+                </div>
+
+                <button 
+                  type="submit" 
+                  style={styles.primaryBtn}
+                  onMouseOver={(e) => { e.currentTarget.style.background = '#2C5282'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.background = '#3182CE'; }}
+                >
+                  Verify & Continue
+                </button>
+
+                <div style={styles.linkGroup}>
+                  <span style={styles.link} onClick={() => setStep('EMAIL')}>Change email</span>
+                  <span style={{...styles.link, ...styles.resendLink, opacity: timer > 0 ? 0.5 : 1, cursor: timer > 0 ? 'not-allowed' : 'pointer'}} onClick={() => timer === 0 && setTimer(30)}>Resend OTP</span>
+                </div>
+
+                <div style={styles.timerText}>
+                  {timer > 0 ? `Resend code in 0:${timer.toString().padStart(2, '0')}` : "You can resend the code now"}
+                </div>
+
+                <div style={styles.secureFooter}>
+                  <ShieldCheck size={18} />
+                  <span>Your code is secure and expires in 10 minutes</span>
+                </div>
+              </form>
+            </>
+          )}
         </div>
-
-        <form onSubmit={handleLogin}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Email</label>
-            <div style={styles.inputWrapper}>
-              <svg style={styles.inputIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
-              <input 
-                style={styles.input}
-                type="email" 
-                placeholder="Email" 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#5483B3';
-                  e.target.style.background = 'white';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#f9fafb';
-                }}
-                required
-              />
-            </div>
-          </div>
-
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Password</label>
-            <div style={styles.inputWrapper}>
-              <svg style={styles.inputIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-              </svg>
-              <input 
-                style={styles.input}
-                type="password" 
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#5483B3';
-                  e.target.style.background = 'white';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#f9fafb';
-                }}
-                required
-              />
-            </div>
-          </div>
-
-          <div style={styles.forgotPassword}>
-            <a 
-              href="#" 
-              style={styles.forgotPasswordLink}
-              onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
-              onMouseOut={(e) => e.target.style.textDecoration = 'none'}
-            >
-              Forgot Password?
-            </a>
-          </div>
-
-          <button 
-            type="submit" 
-            style={styles.loginBtn}
-            onMouseOver={(e) => e.target.style.background = 'linear-gradient(135deg, #4a7199 0%, #3d5f80 100%)'}
-            onMouseOut={(e) => e.target.style.background = 'linear-gradient(135deg, #5483B3 0%, #4a7199 100%)'}
-          >
-            Login
-          </button>
-
-          <div style={styles.signupLink}>
-            New here? <Link 
-              to="/signup" 
-              style={styles.signupLinkA}
-              onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
-              onMouseOut={(e) => e.target.style.textDecoration = 'none'}
-            >
-              Sign Up
-            </Link>
-          </div>
-
-          
-        </form>
       </div>
     </div>
   );

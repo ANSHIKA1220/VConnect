@@ -34,11 +34,13 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
-  min-height: 100vh;
-  overflow-y: auto;  /* ← allows vertical scrolling */
+  height: 100vh;
+  overflow: hidden;  /* Force disable entire page scroll to fix layout issues */
 }
 #root {
-  height: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .app-container {

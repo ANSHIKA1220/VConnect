@@ -1,5 +1,6 @@
 import { Phone, Video, MoreVertical, ArrowLeft, Info, Plus, Send, File, Image as ImageIcon, Camera, FileText, X, Trash2 } from 'lucide-react';
 import '../../styles/chat/ChatWindow.css';
+import { useNavigate } from 'react-router-dom';
 
 const ChatWindow = ({
     chat,
@@ -12,8 +13,10 @@ const ChatWindow = ({
     showMediaGallery,
     setShowMediaGallery,
     showAttachments,
-    setShowAttachments
+    setShowAttachments,
+    onProfileClick
 }) => {
+    const navigate = useNavigate();
     const [message, setMessage] = useState('');
     const [mediaTab, setMediaTab] = useState('media'); // 'media', 'docs', 'links'
     const inputAreaRef = useRef(null);
@@ -74,7 +77,7 @@ const ChatWindow = ({
                         <button className="back-button" onClick={handleBack}>
                             <ArrowLeft size={20} color="#718096" />
                         </button>
-                        <div className="header-user-info">
+                        <div className="header-user-info" onClick={() => onProfileClick && onProfileClick()} style={{ cursor: 'pointer' }}>
                             <div className="header-avatar-container">
                                 <img src={chat.avatar} alt={chat.name} className="header-avatar" />
                             </div>
@@ -193,21 +196,9 @@ const ChatWindow = ({
                             </div>
 
                             <div className="media-grid-content">
-                                {mediaTab === 'media' && (
-                                    <div className="media-preview-grid large">
-                                        <div className="media-item blue"></div>
-                                        <div className="media-item purple"></div>
-                                        <div className="media-item pink"></div>
-                                        <div className="media-item green"></div>
-                                        <div className="media-item yellow"></div>
-                                        <div className="media-item red"></div>
-                                        <div className="media-item indigo"></div>
-                                        <div className="media-item teal"></div>
-                                        <div className="media-item orange"></div>
-                                    </div>
-                                )}
-                                {mediaTab === 'docs' && <div className="empty-state">No documents</div>}
-                                {mediaTab === 'links' && <div className="empty-state">No links</div>}
+                                {mediaTab === 'media' && <div className="empty-state">Coming soon</div>}
+                                {mediaTab === 'docs' && <div className="empty-state">Coming soon</div>}
+                                {mediaTab === 'links' && <div className="empty-state">Coming soon</div>}
                             </div>
                         </div>
                     ) : (
@@ -238,11 +229,7 @@ const ChatWindow = ({
                                         <label>MEDIA, LINKS, AND DOCS</label>
                                         <button className="see-all-btn" onClick={() => { setShowMediaGallery(true); setMediaTab('media'); }}>See all</button>
                                     </div>
-                                    <div className="media-preview-grid">
-                                        <div className="media-item blue"></div>
-                                        <div className="media-item purple"></div>
-                                        <div className="media-item pink"></div>
-                                    </div>
+                                    <div className="empty-state" style={{ marginTop: '12px' }}>Coming soon</div>
                                 </div>
 
                                 <div className="contact-actions-inline">
@@ -256,8 +243,6 @@ const ChatWindow = ({
                     )}
                 </div>
             )}
-
-
         </div>
     );
 };

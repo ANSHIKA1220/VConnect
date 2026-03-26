@@ -117,11 +117,11 @@ body.dark-mode .back-button {
     overflow-y: auto;
     padding: 24px 32px;
     /* User specific background settings */
-    background-color: var(--chat-bg);
-    background-blend-mode: overlay;
+    background-color: var(--bg-main);
     background-size: 400px;
     background-repeat: repeat;
-    background-image: url('./image/IMG-20260202-WA0045.jpg');
+    background-image: url('../../assets/image/IMG-20260202-WA0045.jpg');
+    background-blend-mode: normal;
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -129,7 +129,14 @@ body.dark-mode .back-button {
 
 /* ... (keep separate rules for date/message styling) ... */
 
-/* Input Area */
+body.dark-mode .chat-content {
+    background-color: #0F172A; /* dark navy background */
+    background-image: url('../../assets/image/IMG-20260202-WA0045.jpg');
+    background-blend-mode: difference;
+    opacity: 0.9;
+}
+
+/* User Input Area */
 .chat-input-area {
     padding: 20px 32px;
     background-color: var(--white);

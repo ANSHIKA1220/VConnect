@@ -3,12 +3,14 @@ import MainLayout from '../layouts/MainLayout';
 import MessageList, { mockChats } from "../components/MessageList";
 import ChatPlaceholder from "../components/ChatPlaceholder";
 import ChatWindow from "../components/ChatWindow";
+import DmUserProfile from "../components/chat/DmUserProfile";
 import "../App.css";
 
 
 function DM() {
   const [chats, setChats] = useState(mockChats);
   const [selectedChatId, setSelectedChatId] = useState(null);
+  const [showProfile, setShowProfile] = useState(false);
 
   // Dynamic message history state
   const [messages, setMessages] = useState({
@@ -49,9 +51,14 @@ function DM() {
   const activeChat = chats.find(c => c.id === selectedChatId);
 
   const handleChatSelect = (id) => {
-    setSelectedChatId(id);
-    // Optional: Mark as read on select? User didn't request this specifically, but it's common.
-    // Keeping strict to request: "mark all as read" is a specific action.
+    if (selectedChatId === id) {
+      setSelectedChatId(null);
+    } else {
+      setSelectedChatId(id);
+      setShowProfile(false);
+      // Mark as read when opened
+      setChats(prev => prev.map(c => c.id === id ? { ...c, unread: false, unreadCount: 0, hasUnreadDot: false } : c));
+    }
   };
 
   const handleMarkAllRead = () => {
@@ -124,8 +131,8 @@ function DM() {
   };
 
   return (
-    <MainLayout>
-      <div className="flex" style={{ height: 'calc(100vh - 56px)' }}>
+    <MainLayout noPadding={true}>
+      <div className="flex" style={{ height: '100%', width: '100%', display: 'flex', flex: 1, overflow: 'hidden', minHeight: 0 }}>
         <MessageList
           chats={chats}
           activeChatId={selectedChatId}
@@ -135,13 +142,22 @@ function DM() {
           onDeleteChat={triggerDelete}
         />
         {selectedChatId && activeChat ? (
-          <ChatWindow
-            chat={activeChat}
-            messages={messages[selectedChatId] || []}
-            onBack={() => setSelectedChatId(null)}
-            onDeleteChat={triggerDelete}
-            onSendMessage={(text) => handleSendMessage(selectedChatId, text)}
-          />
+          showProfile ? (
+            <DmUserProfile
+              user={activeChat}
+              onBack={() => setShowProfile(false)}
+              onMessage={() => setShowProfile(false)}
+            />
+          ) : (
+            <ChatWindow
+              chat={activeChat}
+              messages={messages[selectedChatId] || []}
+              onBack={() => setSelectedChatId(null)}
+              onDeleteChat={triggerDelete}
+              onSendMessage={(text) => handleSendMessage(selectedChatId, text)}
+              onProfileClick={() => setShowProfile(true)}
+            />
+          )
         ) : (
           <ChatPlaceholder />
         )}

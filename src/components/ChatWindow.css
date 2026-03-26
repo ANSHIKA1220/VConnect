@@ -112,10 +112,10 @@
     padding: 24px 32px;
     /* User specific background settings */
     background-color: var(--bg-main);
-    background-blend-mode: overlay;
     background-size: 400px;
     background-repeat: repeat;
-    background-image: url('./image/IMG-20260202-WA0045.jpg');
+    background-image: url('../assets/image/IMG-20260202-WA0045.jpg');
+    background-blend-mode: normal; /* light mode */
     display: flex;
     flex-direction: column;
     gap: 24px;
@@ -123,7 +123,15 @@
 
 /* ... (keep separate rules for date/message styling) ... */
 
-/* Input Area */
+body.dark-mode .chat-content {
+    background-color: #111827; /* Darker gray background */
+    background-image: url('../assets/image/IMG-20260202-WA0045.jpg');
+    /* Use difference or exclusion blend mode to invert the light image for dark mode */
+    background-blend-mode: difference;
+    opacity: 0.9;
+}
+
+/* User Input Area */
 .chat-input-area {
     padding: 20px 32px;
     background-color: var(--bg-card);
@@ -231,8 +239,16 @@
     margin-top: 2px;
 }
 
+body.dark-mode .message-time {
+    color: #94A3B8;
+}
+
 .sent .message-time {
     text-align: right;
+}
+
+body.dark-mode .sent .message-time {
+    color: #CBD5E1; /* Higher contrast inside sent bubble */
 }
 
 /* File Attachment Card */
