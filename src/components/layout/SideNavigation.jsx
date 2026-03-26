@@ -63,8 +63,10 @@ function SideNavigation() {
         <button
           onClick={() => {
             localStorage.removeItem('vconnect-auth');
+            localStorage.removeItem('vconnect-theme');
             navigate('/login', { replace: true });
           }}
+
           className="flex-1 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-base font-medium text-center whitespace-nowrap"
         >
           Log out

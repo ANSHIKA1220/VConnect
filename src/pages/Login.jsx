@@ -52,8 +52,12 @@ const Login = () => {
     const otpValue = otp.join('');
     if (otpValue.length === 6) {
       localStorage.setItem('vconnect-auth', 'true');
+      localStorage.setItem('vconnect-theme', 'light');
+      document.body.classList.remove('dark-mode');
+      document.documentElement.classList.remove('dark');
       navigate('/', { replace: true });
     }
+
   };
 
   const styles = {
