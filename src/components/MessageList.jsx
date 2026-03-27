@@ -198,7 +198,6 @@ const MessageList = ({ chats, activeChatId, onChatSelect, onMarkAllRead, onMarkA
                                 <span className="chat-name">{chat.name}</span>
                                 <span className="chat-time">{chat.time}</span>
                             </div>
-                            <div className="chat-role">{chat.role}</div>
                             <div className="chat-message-preview">{chat.lastMessage}</div>
                         </div>
 

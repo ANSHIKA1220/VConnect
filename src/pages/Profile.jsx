@@ -5,10 +5,13 @@ import AboutSection from '../components/profile/AboutSection';
 import InterestsSection from '../components/profile/InterestsSection';
 import ActivitySection from '../components/profile/ActivitySection';
 import SocialLinksSection from '../components/profile/SocialLinksSection';
-import EditProfileModal from '../components/profile/EditProfileModal';
+import EditAboutModal from '../components/profile/EditAboutModal';
+import EditInterestsModal from '../components/profile/EditInterestsModal';
 import ShareProfileModal from '../components/profile/ShareProfileModal';
 import AddSocialLinkModal from '../components/profile/AddSocialLinkModal';
 import { useProfileData } from '../hooks/useProfileData';
+import ResumeCard from "../components/profile/ResumeCard";
+
 
 function Profile() {
   const {
@@ -19,14 +22,17 @@ function Profile() {
     removeSocialLink,
   } = useProfileData();
 
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [editAboutOpen, setEditAboutOpen] = useState(false);
+const [editInterestsOpen, setEditInterestsOpen] = useState(false);
+
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [addSocialLinkDialogOpen, setAddSocialLinkDialogOpen] = useState(false);
   const [editForm, setEditForm] = useState(profileData);
 
   const handleSaveProfile = () => {
     updateProfile(editForm);
-    setEditDialogOpen(false);
+    setEditAboutOpen(false);
+    setEditInterestsOpen(false);
     alert('Profile updated successfully!');
   };
 
@@ -56,60 +62,70 @@ function Profile() {
 
   return (
     <MainLayout>
-    <div className="max-w-md lg:max-w-4xl xl:max-w-5xl mx-auto">
-      <ProfileHeader
-        name={profileData.name}
-        email={profileData.email}
-        onEditClick={() => setEditDialogOpen(true)}
-        onShareClick={() => setShareDialogOpen(true)}
-      />
+      <div className="max-w-md lg:max-w-4xl xl:max-w-5xl mx-auto lg:ml-8 xl:ml-12 -mt-4 lg:-mt-6">
 
-      <div className="px-4 lg:px-8 py-6 lg:py-8 space-y-4 lg:space-y-6">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-          <AboutSection 
-  bio={profileData.bio} 
-  onEdit={() => setEditDialogOpen(true)} 
-/>
-<InterestsSection 
-  interests={profileData.interests} 
-  onRemove={handleRemoveInterest}
-  onEdit={() => setEditDialogOpen(true)}
-/>
+        <ProfileHeader
+          name={profileData.name}
+          email={profileData.email}
+          onEditClick={() => {}}
+          onShareClick={() => setShareDialogOpen(true)}
+        />
+
+        <div className="px-4 lg:px-8 py-6 lg:py-8 space-y-4 lg:space-y-6">
+          <div className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-4 shadow-sm hover:shadow-md transition-all">
+            <ResumeCard />
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <AboutSection
+              bio={profileData.bio}
+              onEdit={() => setEditAboutOpen(true)}
+            />
+            <InterestsSection
+              interests={profileData.interests}
+              onRemove={handleRemoveInterest}
+              onEdit={() => setEditInterestsOpen(true)}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
+            <ActivitySection
+              stats={profileData.activity}
+            />
+            <SocialLinksSection
+              links={profileData.socialLinks}
+              onAddClick={() => setAddSocialLinkDialogOpen(true)}
+              onRemove={handleRemoveSocialLink}
+            />
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6">
-          <ActivitySection 
-  stats={profileData.activity} 
-   
+        <EditAboutModal
+  isOpen={editAboutOpen}
+  onClose={() => setEditAboutOpen(false)}
+  editForm={editForm}
+  setEditForm={setEditForm}
+  onSave={handleSaveProfile}
 />
-          <SocialLinksSection 
-  links={profileData.socialLinks} 
-  onAddClick={() => setAddSocialLinkDialogOpen(true)}
-  onRemove={handleRemoveSocialLink}
-  onEdit={() => setAddSocialLinkDialogOpen(true)}
+
+<EditInterestsModal
+  isOpen={editInterestsOpen}
+  onClose={() => setEditInterestsOpen(false)}
+  editForm={editForm}
+  setEditForm={setEditForm}
+  onSave={handleSaveProfile}
 />
-        </div>
+
+        <ShareProfileModal
+          isOpen={shareDialogOpen}
+          onClose={() => setShareDialogOpen(false)}
+        />
+
+        <AddSocialLinkModal
+          isOpen={addSocialLinkDialogOpen}
+          onClose={() => setAddSocialLinkDialogOpen(false)}
+          onAdd={handleAddSocialLink}
+        />
       </div>
-
-      <EditProfileModal
-        isOpen={editDialogOpen}
-        onClose={() => setEditDialogOpen(false)}
-        editForm={editForm}
-        setEditForm={setEditForm}
-        onSave={handleSaveProfile}
-      />
-
-      <ShareProfileModal
-        isOpen={shareDialogOpen}
-        onClose={() => setShareDialogOpen(false)}
-      />
-
-      <AddSocialLinkModal
-        isOpen={addSocialLinkDialogOpen}
-        onClose={() => setAddSocialLinkDialogOpen(false)}
-        onAdd={handleAddSocialLink}
-      />
-    </div>
     </MainLayout>
   );
 }

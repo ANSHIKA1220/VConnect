@@ -20,46 +20,47 @@ const stats = [
   { label: "Likes Received", icon: ThumbsUp, value: 34 },
 ];
 
-export default function App() {
-  const [selected, setSelected] = useState(null);
-
+export default function RightPanel({ selectedTopic, onTopicSelect }) {
   return (
-    <div style={{ background: "#0a1929", minHeight: "100vh", padding: "24px", display: "flex", justifyContent: "center" }}>
-      <div style={{ width: "288px", display: "flex", flexDirection: "column", gap: "16px" }}>
-
-        {/* Card 1 - Your Stats */}
-        <div style={{ background: "#040d1a", border: "1px solid #1e293b", borderRadius: "16px", padding: "16px" }}>
-          <div style={{ fontSize: "14px", fontWeight: 700, color: "#e5e7eb", marginBottom: "12px" }}>Your Stats</div>
+    <div className="flex flex-col gap-4">
+      {/* Card 1 - Your Stats */}
+      <div className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-4 shadow-card">
+        <div className="text-sm font-bold text-foreground mb-3">Your Stats</div>
+        <div className="space-y-3">
           {stats.map((s, i) => {
             const Icon = s.icon;
             return (
-              <div key={s.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "8px 0", borderBottom: i !== stats.length - 1 ? "1px solid #1e293b" : "none" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                  <Icon size={15} color="#60a5fa" />
-                  <span style={{ fontSize: "13px", color: "#94a3b8" }}>{s.label}</span>
+              <div key={s.label} className={`flex justify-between items-center py-1 ${i !== stats.length - 1 ? 'border-b border-border/50 pb-3' : ''}`}>
+                <div className="flex items-center gap-2">
+                  <Icon size={14} className="text-primary" />
+                  <span className="text-[13px] text-muted-foreground">{s.label}</span>
                 </div>
-                <span style={{ fontSize: "13px", fontWeight: 700, color: "#60a5fa" }}>{s.value}</span>
+                <span className="text-[13px] font-bold text-primary">{s.value}</span>
               </div>
             );
           })}
         </div>
+      </div>
 
-        {/* Card 2 - Trending */}
-        <div style={{ background: "#040d1a", border: "1px solid #1e293b", borderRadius: "16px", padding: "16px" }}>
-          <div style={{ fontSize: "14px", fontWeight: 700, color: "#e5e7eb", marginBottom: "12px" }}>Trending</div>
+      {/* Card 2 - Trending Topics */}
+      <div className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-4 shadow-card">
+        <div className="text-sm font-bold text-foreground mb-3">Trending Topics</div>
+        <div className="space-y-1">
           {topics.map(t => {
             const Icon = t.icon;
-            const isSelected = selected === t.label;
+            const isSelected = selectedTopic === t.label;
             return (
-              <div key={t.label} onClick={() => setSelected(isSelected ? null : t.label)}
-                style={{ display: "flex", alignItems: "center", gap: "8px", padding: "8px 10px", borderRadius: "10px", marginBottom: "2px", cursor: "pointer", background: isSelected ? "rgba(96,165,250,0.1)" : "transparent" }}>
-                <Icon size={15} color={isSelected ? "#60a5fa" : "#64748b"} />
-                <span style={{ fontSize: "13px", fontWeight: 500, color: isSelected ? "#60a5fa" : "#e5e7eb" }}>{t.label}</span>
+              <div 
+                key={t.label} 
+                onClick={() => onTopicSelect(isSelected ? null : t.label)}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl cursor-pointer transition-all ${isSelected ? 'bg-primary/10 text-primary' : 'text-muted-foreground hover:bg-muted'}`}
+              >
+                <Icon size={14} className={isSelected ? 'text-primary' : 'text-muted-foreground'} />
+                <span className={`text-[13px] ${isSelected ? 'font-bold' : 'font-medium opacity-80'}`}>{t.label}</span>
               </div>
             );
           })}
         </div>
-
       </div>
     </div>
   );

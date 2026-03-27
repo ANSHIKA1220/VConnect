@@ -1,4 +1,4 @@
-  import { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { Search, X, Star, BarChart2, Send, Plus, Minus, PenSquare } from "lucide-react";

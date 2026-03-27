@@ -1,15 +1,13 @@
-import { Pencil } from "lucide-react";
-function SocialLinksSection({ links, onAddClick, onRemove ,onEdit}) {
+
+function SocialLinksSection({ links, onAddClick, onRemove}) {
   return (
-    <div className="bg-card rounded-2xl p-5 shadow-card">
+    <div className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-5 shadow-sm">
       <div className="flex justify-between items-center mb-3">
-  <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+  <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
     Social Links
   </h2>
 
-  <button onClick={onEdit} className="p-1 rounded-md hover:bg-muted hover:scale-110 transition">
-    <Pencil size={16} className="text-muted-foreground" />
-  </button>
+  
 </div>
       <div className="space-y-2">
         {links.map((link, index) => (
