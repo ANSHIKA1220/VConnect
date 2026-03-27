@@ -36,9 +36,7 @@ const CATEGORIES = [
   { label: "Mentorship Tips",    count: 27, color: "#8a70b0" },
 ];
 
-// ✅ Tags now derived from CATEGORIES labels
 const ALL_TAGS = CATEGORIES.map((c) => c.label);
-
 const TOP_PROFILES = ALL_PROFILES.slice(0, 5);
 
 const INITIAL_OPPORTUNITIES = [
@@ -90,6 +88,64 @@ const INITIAL_OPPORTUNITIES = [
   },
 ];
 
+// ── Centered Modal Shell ─────────────────────────────────────────
+function CenteredModal({ onClose, children, maxWidth = "480px", maxHeight = "90vh" }) {
+  return (
+    <>
+      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+        <div
+          className="pointer-events-auto flex flex-col rounded-2xl shadow-2xl w-full overflow-hidden"
+          style={{
+            background: "var(--bg-card)",
+            maxWidth,
+            maxHeight,
+            border: "1px solid var(--border-color)",
+            boxShadow: "0 24px 64px rgba(0,0,0,0.35)",
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {children}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ── Modal Header ─────────────────────────────────────────────────
+function ModalHeader({ title, onClose, onBack }) {
+  return (
+    <div
+      className="flex items-center justify-between px-5 py-4 flex-shrink-0"
+      style={{ borderBottom: "1px solid var(--border-color)" }}
+    >
+      <div className="w-8">
+        {onBack && (
+          <button
+            onClick={onBack}
+            className="w-8 h-8 flex items-center justify-center rounded-full border-0 bg-transparent cursor-pointer"
+            style={{ color: "var(--text-primary)" }}
+          >
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+              <path d="M19 12H5M12 5l-7 7 7 7" />
+            </svg>
+          </button>
+        )}
+      </div>
+      <span className="text-sm font-bold tracking-widest uppercase" style={{ color: "var(--text-primary)" }}>
+        {title}
+      </span>
+      <button
+        onClick={onClose}
+        className="w-8 h-8 flex items-center justify-center rounded-full border-0 cursor-pointer transition-colors"
+        style={{ background: "var(--hover-bg)", color: "var(--text-secondary)" }}
+      >
+        <X size={14} />
+      </button>
+    </div>
+  );
+}
+
 // ── Post Composer Modal ──────────────────────────────────────────
 function PostComposerModal({ onClose, onPublish }) {
   const [step, setStep] = useState(1);
@@ -125,197 +181,241 @@ function PostComposerModal({ onClose, onPublish }) {
   };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/70 z-40" onClick={onClose} />
-      <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl shadow-2xl flex flex-col transition-all duration-300 transform" 
-        style={{ 
-          background: "var(--bg-card)", 
-          maxHeight: "92vh",
-          borderTop: "1px solid var(--border-color)",
-          boxShadow: "0 -10px 40px rgba(0,0,0,0.4)"
-        }} 
-        onClick={(e) => e.stopPropagation()}>
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full opactiy-20" style={{ background: "var(--border-color)" }} />
+    <CenteredModal onClose={onClose} maxWidth="520px">
+      {/* Header */}
+      <div
+        className="flex items-center justify-between px-5 py-4 flex-shrink-0"
+        style={{ borderBottom: "1px solid var(--border-color)" }}
+      >
+        <div className="w-8">
+          {step === 2 && (
+            <button
+              onClick={() => setStep(1)}
+              className="w-8 h-8 flex items-center justify-center rounded-full border-0 bg-transparent cursor-pointer"
+              style={{ color: "var(--text-primary)" }}
+            >
+              <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                <path d="M19 12H5M12 5l-7 7 7 7" />
+              </svg>
+            </button>
+          )}
         </div>
-        <div className="flex items-center justify-between px-5 pt-2 pb-3" style={{ borderBottom: "1px solid var(--border-color)" }}>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full border-0 bg-transparent cursor-pointer" style={{ color: "#374151" }}>
-            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
-          </button>
-          <div className="flex items-center gap-2">
-            {[1, 2].map((s) => {
-              const labels = ["Content", "Preview"];
-              const isActive = step === s;
-              const isDone = step > s;
-              return (
-                <button key={s} onClick={() => { if (s === 2 && canPreview) setStep(2); if (s === 1) setStep(1); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border-0 cursor-pointer transition-all"
-                  style={{ background: isActive ? "linear-gradient(135deg, var(--primary-blue), #60a5fa)" : isDone ? "rgba(34,197,94,0.15)" : "rgba(59,130,246,0.12)", color: isActive ? "#fff" : isDone ? "#22c55e" : "#6b7280" }}>
-                  <span className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-extrabold"
-                    style={{ background: isActive ? "rgba(255,255,255,0.25)" : isDone ? "#22c55e" : "rgba(59,130,246,0.3)", color: isActive || isDone ? "#fff" : "#6b7280" }}>
-                    {s}
-                  </span>
-                  {labels[s - 1]}
-                </button>
-              );
-            })}
-          </div>
-          <div className="w-8" />
+        {/* Step pills */}
+        <div className="flex items-center gap-2">
+          {[1, 2].map((s) => {
+            const labels = ["Content", "Preview"];
+            const isActive = step === s;
+            const isDone = step > s;
+            return (
+              <button
+                key={s}
+                onClick={() => { if (s === 2 && canPreview) setStep(2); if (s === 1) setStep(1); }}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold border-0 cursor-pointer transition-all"
+                style={{
+                  background: isActive ? "linear-gradient(135deg, var(--primary-blue), #60a5fa)" : isDone ? "rgba(34,197,94,0.15)" : "rgba(59,130,246,0.12)",
+                  color: isActive ? "#fff" : isDone ? "#22c55e" : "#6b7280",
+                }}
+              >
+                <span
+                  className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-extrabold"
+                  style={{
+                    background: isActive ? "rgba(255,255,255,0.25)" : isDone ? "#22c55e" : "rgba(59,130,246,0.3)",
+                    color: isActive || isDone ? "#fff" : "#6b7280",
+                  }}
+                >
+                  {s}
+                </span>
+                {labels[s - 1]}
+              </button>
+            );
+          })}
         </div>
+        <button
+          onClick={onClose}
+          className="w-8 h-8 flex items-center justify-center rounded-full border-0 cursor-pointer transition-colors"
+          style={{ background: "var(--hover-bg)", color: "var(--text-secondary)" }}
+        >
+          <X size={14} />
+        </button>
+      </div>
 
-        {step === 1 && (
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5" style={{ minHeight: 0 }}>
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-2" style={{ color: "var(--text-secondary)" }}>
-                <span style={{ color: "#2d6a8a" }}>T</span> POST TITLE <span style={{ color: "#e05555" }}>*</span>
-              </label>
-              <div className="relative">
-                <input className="w-full px-4 py-3 rounded-xl text-sm outline-none border transition-colors"
-                  style={{ background: "var(--hover-bg)", borderColor: title.length > 0 ? "var(--primary-blue)" : "var(--border-color)", color: "var(--text-primary)" }}
-                  placeholder="Give your post a catchy title..." value={title} maxLength={100}
-                  onChange={(e) => setTitle(e.target.value)} />
-                <span className="absolute bottom-2 right-3 text-[10px]" style={{ color: title.length >= 90 ? "#e05555" : "#9ca3af" }}>{title.length}/100</span>
-              </div>
+      {/* Step 1 */}
+      {step === 1 && (
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-5" style={{ minHeight: 0 }}>
+          <div>
+            <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-2" style={{ color: "var(--text-secondary)" }}>
+              <span style={{ color: "#2d6a8a" }}>T</span> POST TITLE <span style={{ color: "#e05555" }}>*</span>
+            </label>
+            <div className="relative">
+              <input
+                className="w-full px-4 py-3 rounded-xl text-sm outline-none border transition-colors"
+                style={{ background: "var(--hover-bg)", borderColor: title.length > 0 ? "var(--primary-blue)" : "var(--border-color)", color: "var(--text-primary)" }}
+                placeholder="Give your post a catchy title..."
+                value={title}
+                maxLength={100}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <span className="absolute bottom-2 right-3 text-[10px]" style={{ color: title.length >= 90 ? "#e05555" : "#9ca3af" }}>{title.length}/100</span>
             </div>
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-2" style={{ color: "#374151" }}>
-                DESCRIPTION <span style={{ color: "#e05555" }}>*</span>
-              </label>
-              <div className="relative">
-                <textarea className="w-full px-4 py-3 rounded-xl text-sm outline-none border resize-none transition-colors"
-                  style={{ background: "var(--hover-bg)", borderColor: description.length > 0 ? "var(--primary-blue)" : "var(--border-color)", color: "var(--text-primary)", minHeight: "110px" }}
-                  placeholder="Write a compelling description of your post..." value={description} maxLength={400}
-                  onChange={(e) => setDescription(e.target.value)} />
-                <span className="absolute bottom-2 right-3 text-[10px]" style={{ color: description.length >= 380 ? "#e05555" : "#9ca3af" }}>{description.length}/400</span>
-              </div>
+          </div>
+          <div>
+            <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-2" style={{ color: "var(--text-secondary)" }}>
+              DESCRIPTION <span style={{ color: "#e05555" }}>*</span>
+            </label>
+            <div className="relative">
+              <textarea
+                className="w-full px-4 py-3 rounded-xl text-sm outline-none border resize-none transition-colors"
+                style={{ background: "var(--hover-bg)", borderColor: description.length > 0 ? "var(--primary-blue)" : "var(--border-color)", color: "var(--text-primary)", minHeight: "110px" }}
+                placeholder="Write a compelling description of your post..."
+                value={description}
+                maxLength={400}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+              <span className="absolute bottom-2 right-3 text-[10px]" style={{ color: description.length >= 380 ? "#e05555" : "#9ca3af" }}>{description.length}/400</span>
             </div>
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--text-secondary)" }}>
-                <span style={{ color: "#e0a030" }}>⚡</span> TAGS
-                <span className="text-[10px] font-normal ml-0.5" style={{ color: "#9ca3af" }}>(up to 3)</span>
-              </label>
-              {/* ✅ Tags now use CATEGORIES with matching colors */}
-              <div className="flex flex-wrap gap-2 mt-2">
-                {CATEGORIES.map((cat) => {
-                  const isSelected = selectedTags.includes(cat.label);
-                  return (
-                    <button key={cat.label} onClick={() => toggleTag(cat.label)}
-                      className="px-3 py-1.5 rounded-full text-xs font-semibold border-0 cursor-pointer transition-all"
-                      style={{
-                        background: isSelected ? cat.color : "var(--hover-bg)",
-                        color: isSelected ? "#fff" : "var(--text-primary)",
-                        border: isSelected ? `1.5px solid ${cat.color}` : "1.5px solid var(--border-color)",
-                        opacity: !isSelected && selectedTags.length >= MAX_TAGS ? 0.4 : 1,
-                        boxShadow: isSelected ? `0 2px 8px ${cat.color}55` : "none",
-                      }}>
-                      {cat.label}
+          </div>
+          <div>
+            <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--text-secondary)" }}>
+              <span style={{ color: "#e0a030" }}>⚡</span> TAGS
+              <span className="text-[10px] font-normal ml-0.5" style={{ color: "#9ca3af" }}>(up to 3)</span>
+            </label>
+            <div className="flex flex-wrap gap-2 mt-2">
+              {CATEGORIES.map((cat) => {
+                const isSelected = selectedTags.includes(cat.label);
+                return (
+                  <button
+                    key={cat.label}
+                    onClick={() => toggleTag(cat.label)}
+                    className="px-3 py-1.5 rounded-full text-xs font-semibold border-0 cursor-pointer transition-all"
+                    style={{
+                      background: isSelected ? cat.color : "var(--hover-bg)",
+                      color: isSelected ? "#fff" : "var(--text-primary)",
+                      border: isSelected ? `1.5px solid ${cat.color}` : "1.5px solid var(--border-color)",
+                      opacity: !isSelected && selectedTags.length >= MAX_TAGS ? 0.4 : 1,
+                      boxShadow: isSelected ? `0 2px 8px ${cat.color}55` : "none",
+                    }}
+                  >
+                    {cat.label}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+          <div>
+            <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--text-secondary)" }}>
+              KEY HIGHLIGHTS <span className="text-[10px] font-normal ml-0.5" style={{ color: "#9ca3af" }}>(up to 5)</span>
+            </label>
+            <p className="text-[11px] mb-3" style={{ color: "#6b7280" }}>Add short bullet points that summarize the key details.</p>
+            <div className="space-y-2">
+              {highlights.map((h, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full flex-shrink-0 bg-primary" />
+                  <input
+                    className="flex-1 h-9 px-3 rounded-xl text-sm outline-none border transition-colors"
+                    style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+                    placeholder={`Highlight ${idx + 1}...`}
+                    value={h}
+                    onChange={(e) => updateHighlight(idx, e.target.value)}
+                  />
+                  {highlights.length > 1 && (
+                    <button
+                      onClick={() => removeHighlight(idx)}
+                      className="w-7 h-7 rounded-full flex items-center justify-center border-0 cursor-pointer flex-shrink-0"
+                      style={{ background: "rgba(224,85,85,0.12)", color: "#e05555" }}
+                    >
+                      <Minus size={12} />
                     </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            {highlights.length < MAX_HIGHLIGHTS && (
+              <button onClick={addHighlight} className="flex items-center gap-1.5 mt-3 text-xs font-semibold border-0 bg-transparent cursor-pointer" style={{ color: "var(--primary-blue)" }}>
+                <Plus size={13} /> Add highlight
+              </button>
+            )}
+          </div>
+          <div className="h-2" />
+        </div>
+      )}
+
+      {/* Step 2 */}
+      {step === 2 && (
+        <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4" style={{ minHeight: 0 }}>
+          <p className="text-center text-xs" style={{ color: "#6b7280" }}>This is how your post will appear in the feed.</p>
+          <div className="rounded-xl border p-4" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
+            <div className="flex items-start gap-2.5 mb-2">
+              <img src="https://i.pravatar.cc/100?img=5" alt="You" className="w-9 h-9 rounded-full object-cover border" style={{ borderColor: "#e2e8f0" }} />
+              <div className="flex-1">
+                <div className="text-[13.5px] font-semibold" style={{ color: "#111827" }}>You</div>
+                <div className="flex items-center gap-1.5 text-[11px]" style={{ color: "#6b7280" }}>
+                  Just now <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold" style={{ background: "rgba(224,160,48,0.15)", color: "#e0a030" }}>Draft</span>
+                </div>
+              </div>
+            </div>
+            <div className="text-[15px] font-bold mb-1.5" style={{ color: "#111827" }}>{title || "Your post title"}</div>
+            <div className="text-[13px] leading-relaxed mb-3 whitespace-pre-line" style={{ color: "#6b7280" }}>{description || "Your description will appear here..."}</div>
+            {selectedTags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5 mb-3">
+                {selectedTags.map((tag) => {
+                  const catMeta = CATEGORIES.find((c) => c.label === tag);
+                  return (
+                    <span key={tag} className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border"
+                      style={{ background: catMeta ? `${catMeta.color}20` : "#e0f2fe", borderColor: catMeta ? `${catMeta.color}55` : "#bae6fd", color: catMeta ? catMeta.color : "#0369a1" }}>
+                      ⚡ {tag}
+                    </span>
                   );
                 })}
               </div>
-            </div>
-            <div>
-              <label className="flex items-center gap-1.5 text-[11px] font-bold tracking-widest uppercase mb-1" style={{ color: "var(--text-secondary)" }}>
-                KEY HIGHLIGHTS <span className="text-[10px] font-normal ml-0.5" style={{ color: "#9ca3af" }}>(up to 5)</span>
-              </label>
-              <p className="text-[11px] mb-3" style={{ color: "#6b7280" }}>Add short bullet points that summarize the key details.</p>
-              <div className="space-y-2">
-                {highlights.map((h, idx) => (
-                  <div key={idx} className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full flex-shrink-0 bg-primary" />
-                    <input className="flex-1 h-9 px-3 rounded-xl text-sm outline-none border transition-colors"
-                      style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
-                      placeholder={`Highlight ${idx + 1}...`} value={h}
-                      onChange={(e) => updateHighlight(idx, e.target.value)} />
-                    {highlights.length > 1 && (
-                      <button onClick={() => removeHighlight(idx)} className="w-7 h-7 rounded-full flex items-center justify-center border-0 cursor-pointer flex-shrink-0" style={{ background: "rgba(224,85,85,0.12)", color: "#e05555" }}>
-                        <Minus size={12} />
-                      </button>
-                    )}
-                  </div>
+            )}
+            {highlights.filter((h) => h.trim()).length > 0 && (
+              <ul className="mb-3 space-y-1">
+                {highlights.filter((h) => h.trim()).map((b, i) => (
+                  <li key={i} className="flex items-center gap-2 text-[12px]" style={{ color: "#6b7280" }}>
+                    <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-primary" /> {b}
+                  </li>
                 ))}
-              </div>
-              {highlights.length < MAX_HIGHLIGHTS && (
-                <button onClick={addHighlight} className="flex items-center gap-1.5 mt-3 text-xs font-semibold border-0 bg-transparent cursor-pointer" style={{ color: "var(--primary-blue)" }}>
-                  <Plus size={13} /> Add highlight
-                </button>
-              )}
-            </div>
-            <div className="h-4" />
+              </ul>
+            )}
           </div>
-        )}
-
-        {step === 2 && (
-          <div className="flex-1 overflow-y-auto px-5 py-5 flex flex-col gap-4" style={{ minHeight: 0 }}>
-            <p className="text-center text-xs" style={{ color: "#6b7280" }}>This is how your post will appear in the feed.</p>
-            <div className="rounded-xl border p-4" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
-              <div className="flex items-start gap-2.5 mb-2">
-                <img src="https://i.pravatar.cc/100?img=5" alt="You" className="w-9 h-9 rounded-full object-cover border" style={{ borderColor: "#e2e8f0" }} />
-                <div className="flex-1">
-                  <div className="text-[13.5px] font-semibold" style={{ color: "#111827" }}>You</div>
-                  <div className="flex items-center gap-1.5 text-[11px]" style={{ color: "#6b7280" }}>
-                    Just now <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold" style={{ background: "rgba(224,160,48,0.15)", color: "#e0a030" }}>Draft</span>
-                  </div>
-                </div>
-              </div>
-              <div className="text-[15px] font-bold mb-1.5" style={{ color: "#111827" }}>{title || "Your post title"}</div>
-              <div className="text-[13px] leading-relaxed mb-3 whitespace-pre-line" style={{ color: "#6b7280" }}>{description || "Your description will appear here..."}</div>
-              {selectedTags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5 mb-3">
-                  {selectedTags.map((tag) => {
-                    const catMeta = CATEGORIES.find((c) => c.label === tag);
-                    return (
-                      <span key={tag} className="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full border"
-                        style={{
-                          background: catMeta ? `${catMeta.color}20` : "#e0f2fe",
-                          borderColor: catMeta ? `${catMeta.color}55` : "#bae6fd",
-                          color: catMeta ? catMeta.color : "#0369a1",
-                        }}>
-                        ⚡ {tag}
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
-              {highlights.filter((h) => h.trim()).length > 0 && (
-                <ul className="mb-3 space-y-1">
-                  {highlights.filter((h) => h.trim()).map((b, i) => (
-                    <li key={i} className="flex items-center gap-2 text-[12px]" style={{ color: "#6b7280" }}>
-                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 bg-primary" /> {b}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-        )}
-
-        <div className="px-5 pb-8 pt-3 flex flex-col gap-2.5" style={{ borderTop: "1px solid var(--border-color)" }}>
-          {step === 1 ? (
-            <button onClick={() => canPreview && setStep(2)} className="w-full py-3.5 rounded-2xl text-sm font-bold border-0 cursor-pointer transition-all"
-              style={{ 
-                background: canPreview ? "linear-gradient(135deg, var(--primary-blue), #2563eb)" : "var(--hover-bg)", 
-                color: canPreview ? "#fff" : "var(--text-secondary)", 
-                boxShadow: canPreview ? "0 4px 14px rgba(59, 130, 246, 0.4)" : "none", 
-                cursor: canPreview ? "pointer" : "not-allowed" 
-              }}>
-              Preview Post →
-            </button>
-          ) : (
-            <>
-              <button onClick={handlePublish} className="w-full py-3.5 rounded-2xl text-sm font-bold border-0 cursor-pointer shadow-lg active:scale-[0.98] transition-transform"
-                style={{ background: "linear-gradient(135deg, var(--primary-blue), #2563eb)", color: "#fff", boxShadow: "0 6px 20px rgba(37,99,235,0.45)" }}>
-                ➤ Publish to Discover
-              </button>
-              <button onClick={() => setStep(1)} className="w-full py-3 rounded-2xl text-sm font-semibold border cursor-pointer transition-colors"
-                style={{ background: "transparent", borderColor: "var(--border-color)", color: "var(--text-primary)" }}>
-                ✏ Go back and edit
-              </button>
-            </>
-          )}
         </div>
+      )}
+
+      {/* Footer */}
+      <div className="px-5 py-4 flex flex-col gap-2.5 flex-shrink-0" style={{ borderTop: "1px solid var(--border-color)" }}>
+        {step === 1 ? (
+          <button
+            onClick={() => canPreview && setStep(2)}
+            className="w-full py-3 rounded-xl text-sm font-bold border-0 cursor-pointer transition-all"
+            style={{
+              background: canPreview ? "linear-gradient(135deg, var(--primary-blue), #2563eb)" : "var(--hover-bg)",
+              color: canPreview ? "#fff" : "var(--text-secondary)",
+              boxShadow: canPreview ? "0 4px 14px rgba(59, 130, 246, 0.4)" : "none",
+              cursor: canPreview ? "pointer" : "not-allowed",
+            }}
+          >
+            Preview Post →
+          </button>
+        ) : (
+          <>
+            <button
+              onClick={handlePublish}
+              className="w-full py-3 rounded-xl text-sm font-bold border-0 cursor-pointer active:scale-[0.98] transition-transform"
+              style={{ background: "linear-gradient(135deg, var(--primary-blue), #2563eb)", color: "#fff", boxShadow: "0 6px 20px rgba(37,99,235,0.45)" }}
+            >
+              ➤ Publish to Discover
+            </button>
+            <button
+              onClick={() => setStep(1)}
+              className="w-full py-2.5 rounded-xl text-sm font-semibold border cursor-pointer transition-colors"
+              style={{ background: "transparent", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+            >
+              ✏ Go back and edit
+            </button>
+          </>
+        )}
       </div>
-    </>
+    </CenteredModal>
   );
 }
 
@@ -329,53 +429,57 @@ function CommentsModal({ post, onClose, onAddComment }) {
     setText("");
   };
   return (
-    <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
-      <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl shadow-2xl flex flex-col" style={{ background: "var(--bg-card)", maxHeight: "85vh" }}>
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full opacity-20" style={{ background: "var(--text-secondary)" }} />
-        </div>
-        <div className="flex items-center justify-between px-5 pt-2 pb-3 border-b" style={{ borderColor: "var(--border-color)" }}>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full border-0 bg-transparent cursor-pointer" style={{ color: "var(--text-primary)" }}>
-            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7" /></svg>
-          </button>
-          <span className="text-sm font-bold tracking-widest uppercase" style={{ color: "var(--text-primary)" }}>Comments</span>
-          <div className="w-8" />
-        </div>
-        <div className="px-5 py-3 border-b" style={{ borderColor: "var(--border-color)" }}>
-          <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{post.title}</span>
-        </div>
-        <div className="flex-1 overflow-y-auto px-5 py-3 space-y-4" style={{ minHeight: 0 }}>
-          {post.liveComments.length === 0 ? (
-            <div className="text-center py-10 text-sm" style={{ color: "#9ca3af" }}>No comments yet. Be the first!</div>
-          ) : (
-            post.liveComments.map((c) => (
-              <div key={c.id} className="flex items-start gap-3">
-                <img src={c.avatar} alt={c.author} className="w-9 h-9 rounded-full object-cover flex-shrink-0 border" style={{ borderColor: "#e5e7eb" }} />
-                <div className="flex-1">
-                  <div className="flex items-baseline gap-2 mb-0.5">
-                    <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{c.author}</span>
-                    <span className="text-[11px]" style={{ color: "var(--text-secondary)" }}>{c.time}</span>
-                  </div>
-                  <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>{c.text}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-        <div className="px-4 py-3 flex items-center gap-3 border-t" style={{ borderColor: "var(--border-color)" }}>
-          <input className="flex-1 h-10 px-4 rounded-xl text-sm outline-none border transition-colors"
-            style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
-            placeholder="Write a comment..." value={text}
-            onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }} />
-          <button onClick={handleSend} className="w-10 h-10 rounded-full flex items-center justify-center border-0 cursor-pointer flex-shrink-0"
-            style={{ background: text.trim() ? "linear-gradient(135deg, var(--primary-blue), #60a5fa)" : "#e5e7eb", transition: "background 0.2s" }}>
-            <Send size={15} color={text.trim() ? "#fff" : "#9ca3af"} />
-          </button>
-        </div>
+    <CenteredModal onClose={onClose} maxWidth="480px" maxHeight="80vh">
+      <ModalHeader title="Comments" onClose={onClose} />
+      {/* Post title */}
+      <div className="px-5 py-3 flex-shrink-0" style={{ borderBottom: "1px solid var(--border-color)" }}>
+        <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{post.title}</span>
       </div>
-    </>
+      {/* Comments list */}
+      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" style={{ minHeight: 0 }}>
+        {post.liveComments.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12 gap-3">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ background: "rgba(59,130,246,0.1)" }}>
+              <svg width="20" height="20" fill="none" stroke="var(--primary-blue)" strokeWidth="1.8" viewBox="0 0 24 24">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+              </svg>
+            </div>
+            <p className="text-sm" style={{ color: "#9ca3af" }}>No comments yet. Be the first!</p>
+          </div>
+        ) : (
+          post.liveComments.map((c) => (
+            <div key={c.id} className="flex items-start gap-3">
+              <img src={c.avatar} alt={c.author} className="w-9 h-9 rounded-full object-cover flex-shrink-0 border" style={{ borderColor: "#e5e7eb" }} />
+              <div className="flex-1">
+                <div className="flex items-baseline gap-2 mb-0.5">
+                  <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>{c.author}</span>
+                  <span className="text-[11px]" style={{ color: "var(--text-secondary)" }}>{c.time}</span>
+                </div>
+                <p className="text-[13.5px] leading-relaxed" style={{ color: "var(--text-secondary)" }}>{c.text}</p>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      {/* Input */}
+      <div className="px-4 py-3 flex items-center gap-3 flex-shrink-0" style={{ borderTop: "1px solid var(--border-color)" }}>
+        <input
+          className="flex-1 h-10 px-4 rounded-xl text-sm outline-none border transition-colors"
+          style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+          placeholder="Write a comment..."
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+        />
+        <button
+          onClick={handleSend}
+          className="w-10 h-10 rounded-full flex items-center justify-center border-0 cursor-pointer flex-shrink-0"
+          style={{ background: text.trim() ? "linear-gradient(135deg, var(--primary-blue), #60a5fa)" : "#e5e7eb", transition: "background 0.2s" }}
+        >
+          <Send size={15} color={text.trim() ? "#fff" : "#9ca3af"} />
+        </button>
+      </div>
+    </CenteredModal>
   );
 }
 
@@ -388,47 +492,68 @@ function ShareModal({ post, onClose }) {
     setTimeout(() => setCopied(false), 2000);
   };
   const shareOptions = [
-    { label: "WhatsApp", color: "#25D366", bg: "rgba(37,211,102,0.12)", icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> },
-    { label: "Email", color: "#3B82F6", bg: "rgba(59,130,246,0.12)", icon: <svg width="26" height="26" fill="none" stroke="#3B82F6" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg> },
-    { label: copied ? "Copied!" : "Copy Link", color: copied ? "#3dca8a" : "#a0a8b8", bg: copied ? "rgba(61,202,138,0.12)" : "rgba(160,168,184,0.12)", onClick: handleCopy, icon: <svg width="26" height="26" fill="none" stroke={copied ? "#3dca8a" : "#a0a8b8"} strokeWidth="1.8" viewBox="0 0 24 24">{copied ? <path d="M20 6L9 17l-5-5"/> : <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>}</svg> },
-    { label: "Community", color: "#8a70b0", bg: "rgba(138,112,176,0.12)", icon: <svg width="26" height="26" fill="none" stroke="#8a70b0" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> },
-    { label: "LinkedIn", color: "#0A66C2", bg: "rgba(10,102,194,0.12)", icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
+    {
+      label: "WhatsApp", color: "#25D366", bg: "rgba(37,211,102,0.12)",
+      icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>,
+    },
+    {
+      label: "Email", color: "#3B82F6", bg: "rgba(59,130,246,0.12)",
+      icon: <svg width="26" height="26" fill="none" stroke="#3B82F6" strokeWidth="1.8" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 7 10-7"/></svg>,
+    },
+    {
+      label: copied ? "Copied!" : "Copy Link",
+      color: copied ? "#3dca8a" : "#a0a8b8",
+      bg: copied ? "rgba(61,202,138,0.12)" : "rgba(160,168,184,0.12)",
+      onClick: handleCopy,
+      icon: <svg width="26" height="26" fill="none" stroke={copied ? "#3dca8a" : "#a0a8b8"} strokeWidth="1.8" viewBox="0 0 24 24">{copied ? <path d="M20 6L9 17l-5-5"/> : <><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></>}</svg>,
+    },
+    {
+      label: "Community", color: "#8a70b0", bg: "rgba(138,112,176,0.12)",
+      icon: <svg width="26" height="26" fill="none" stroke="#8a70b0" strokeWidth="1.8" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+    },
+    {
+      label: "LinkedIn", color: "#0A66C2", bg: "rgba(10,102,194,0.12)",
+      icon: <svg width="26" height="26" viewBox="0 0 24 24" fill="#0A66C2"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>,
+    },
   ];
+
   return (
-    <>
-      <div className="fixed inset-0 bg-black/60 z-40" onClick={onClose} />
-      <div className="fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl shadow-2xl" style={{ background: "var(--bg-card)", borderTop: "1px solid var(--border-color)" }}>
-        <div className="flex justify-center pt-3 pb-1">
-          <div className="w-10 h-1 rounded-full opacity-20" style={{ background: "var(--text-secondary)" }} />
-        </div>
-        <div className="flex items-center justify-between px-5 pt-2 pb-3">
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-full border-0 bg-transparent cursor-pointer" style={{ color: "var(--text-primary)" }}>
-            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-          </button>
-          <span className="text-sm font-bold tracking-widest uppercase" style={{ color: "var(--text-primary)" }}>Share Post</span>
-          <div className="w-8" />
-        </div>
-        <div className="mx-5 mb-4 flex items-center gap-2.5 px-3 py-2.5 rounded-xl border transition-colors" style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)" }}>
-          <svg width="14" height="14" fill="none" stroke="var(--primary-blue)" strokeWidth="2" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-          <span className="text-xs font-semibold truncate flex-1" style={{ color: "var(--text-primary)" }}>{post.title}</span>
-        </div>
-        <div className="grid grid-cols-5 gap-3 px-5 pb-5">
-          {shareOptions.map((opt) => (
-            <button key={opt.label} onClick={opt.onClick || undefined} className="flex flex-col items-center gap-2 border-0 bg-transparent cursor-pointer">
-              <div className="w-14 h-14 rounded-2xl flex items-center justify-center border" style={{ background: opt.bg, borderColor: `${opt.color}40`, transition: "transform 0.15s" }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.06)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
-                {opt.icon}
-              </div>
-              <span className="text-[10.5px] font-medium text-center leading-tight" style={{ color: opt.color }}>{opt.label}</span>
-            </button>
-          ))}
-        </div>
-        <div className="px-5 pb-8">
-          <button onClick={onClose} className="w-full py-3 rounded-2xl text-sm font-semibold border-0 cursor-pointer transition-colors" style={{ background: "var(--hover-bg)", color: "var(--text-primary)" }}>Cancel</button>
-        </div>
+    <CenteredModal onClose={onClose} maxWidth="420px">
+      <ModalHeader title="Share Post" onClose={onClose} />
+      {/* Post preview pill */}
+      <div className="mx-5 mt-4 mb-2 flex items-center gap-2.5 px-3 py-2.5 rounded-xl border" style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)" }}>
+        <svg width="14" height="14" fill="none" stroke="var(--primary-blue)" strokeWidth="2" viewBox="0 0 24 24">
+          <rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>
+        </svg>
+        <span className="text-xs font-semibold truncate flex-1" style={{ color: "var(--text-primary)" }}>{post.title}</span>
       </div>
-    </>
+      {/* Share options grid */}
+      <div className="grid grid-cols-5 gap-3 px-5 py-5">
+        {shareOptions.map((opt) => (
+          <button key={opt.label} onClick={opt.onClick || undefined} className="flex flex-col items-center gap-2 border-0 bg-transparent cursor-pointer">
+            <div
+              className="w-14 h-14 rounded-2xl flex items-center justify-center border"
+              style={{ background: opt.bg, borderColor: `${opt.color}40` }}
+              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.07)")}
+              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            >
+              {opt.icon}
+            </div>
+            <span className="text-[10.5px] font-medium text-center leading-tight" style={{ color: opt.color }}>{opt.label}</span>
+          </button>
+        ))}
+      </div>
+      {/* Cancel */}
+      <div className="px-5 pb-5">
+        <button
+          onClick={onClose}
+          className="w-full py-2.5 rounded-xl text-sm font-semibold border-0 cursor-pointer transition-colors"
+          style={{ background: "var(--hover-bg)", color: "var(--text-primary)" }}
+        >
+          Cancel
+        </button>
+      </div>
+    </CenteredModal>
   );
 }
 
@@ -439,7 +564,7 @@ function PostComposer({ onOpen }) {
       <button
         onClick={onOpen}
         className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl border cursor-pointer transition-all"
-        style={{ background: "var(--panel-accent-bg)", borderColor: "var(--border-color)", borderOpacity: "0.4", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.03)" }}
+        style={{ background: "var(--panel-accent-bg)", borderColor: "var(--border-color)", boxShadow: "inset 0 1px 3px rgba(0,0,0,0.03)" }}
         onMouseEnter={(e) => { e.currentTarget.style.borderColor = "var(--primary-blue)"; e.currentTarget.style.background = "var(--hover-bg)"; }}
         onMouseLeave={(e) => { e.currentTarget.style.borderColor = "var(--border-color)"; e.currentTarget.style.background = "var(--panel-accent-bg)"; }}
       >
@@ -455,6 +580,79 @@ function PostComposer({ onOpen }) {
   );
 }
 
+// ── Profiles Modal ───────────────────────────────────────────────
+function ProfilesModal({ onClose, filteredProfiles, drawerSearch, setDrawerSearch, expandedProfile, setExpandedProfile }) {
+  return (
+    <CenteredModal onClose={onClose} maxWidth="580px" maxHeight="85vh">
+      <ModalHeader title="Top Profiles" onClose={onClose} />
+      {/* Search */}
+      <div className="px-5 py-3 flex-shrink-0" style={{ borderBottom: "1px solid var(--border-color)" }}>
+        <div className="relative">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#9ca3af" }} />
+          <input
+            className="w-full h-10 pl-10 pr-4 rounded-xl outline-none text-sm border transition-colors"
+            style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
+            placeholder="Find your next guide..."
+            value={drawerSearch}
+            onChange={(e) => setDrawerSearch(e.target.value)}
+          />
+        </div>
+      </div>
+      {/* Grid */}
+      <div
+        className="flex-1 overflow-y-auto px-5 py-4"
+        style={{ minHeight: 0, scrollbarWidth: "thin", scrollbarColor: "rgba(58,109,138,0.3) transparent" }}
+      >
+        <div className="grid grid-cols-3 gap-4 sm:grid-cols-4">
+          {filteredProfiles.map((p) => (
+            <div key={p.id} className="relative">
+              <button
+                className="w-full flex flex-col items-center gap-2 p-3 rounded-2xl border cursor-pointer transition-all"
+                style={{ borderColor: "var(--border-color)", background: "var(--panel-accent-bg)" }}
+                onClick={() => setExpandedProfile(expandedProfile?.id === p.id ? null : p)}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hover-bg)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "var(--panel-accent-bg)")}
+              >
+                <img src={p.avatar} alt={p.name} className="w-14 h-14 rounded-full object-cover border-2" style={{ borderColor: "rgba(58,109,138,0.3)" }} />
+                <span className="text-xs font-semibold text-center leading-tight" style={{ color: "var(--text-primary)" }}>{p.name}</span>
+                <span className="text-[10px] text-center" style={{ color: "var(--text-secondary)" }}>{p.role}</span>
+              </button>
+              {expandedProfile?.id === p.id && p.years && (
+                <div
+                  className="absolute top-0 left-0 z-10 w-52 rounded-2xl shadow-xl p-4 border"
+                  style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <img src={p.avatar} alt={p.name} className="w-12 h-12 rounded-full border object-cover" style={{ borderColor: "rgba(58,109,138,0.3)" }} />
+                    <div>
+                      <div className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{p.name}</div>
+                      <div className="text-xs" style={{ color: "var(--text-secondary)" }}>{p.role}</div>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-semibold mb-1" style={{ color: "#f59e0b" }}>
+                    <Star size={13} style={{ fill: "#f59e0b" }} />{p.years}
+                  </div>
+                  <div className="flex items-center gap-2 text-xs font-semibold mb-3" style={{ color: "#10b981" }}>
+                    <BarChart2 size={13} />{p.skill}
+                  </div>
+                  <button
+                    className="w-full py-1.5 rounded-lg text-xs font-semibold border cursor-pointer"
+                    style={{ borderColor: "#4a8fa8", color: "#2d6a8a", background: "transparent" }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = "#2d6a8a"; e.currentTarget.style.color = "#fff"; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#2d6a8a"; }}
+                  >
+                    View Profile
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+    </CenteredModal>
+  );
+}
+
 // ── Main Component ───────────────────────────────────────────────
 export default function Discover() {
   const navigate = useNavigate();
@@ -464,7 +662,7 @@ export default function Discover() {
   const [liveComments, setLiveComments]             = useState(() => Object.fromEntries(INITIAL_OPPORTUNITIES.map((o) => [o.id, o.initialComments || []])));
   const [showComposerModal, setShowComposerModal]   = useState(false);
   const [showPublishSuccess, setShowPublishSuccess] = useState(false);
-  const [showProfilesDrawer, setShowProfilesDrawer] = useState(false);
+  const [showProfilesModal, setShowProfilesModal]   = useState(false);
   const [drawerSearch, setDrawerSearch]             = useState("");
   const [expandedProfile, setExpandedProfile]       = useState(null);
   const [query, setQuery]                           = useState("");
@@ -516,9 +714,9 @@ export default function Discover() {
     return ALL_PROFILES.filter((p) => p.name.toLowerCase().includes(q) || p.role.toLowerCase().includes(q));
   }, [drawerSearch]);
 
-  const closeDrawer = () => { setShowProfilesDrawer(false); setExpandedProfile(null); };
-  const toggleMenu  = (id, e) => { e.stopPropagation(); setOpenMenuId(openMenuId === id ? null : id); };
-  const closeMenu   = () => setOpenMenuId(null);
+  const closeProfilesModal = () => { setShowProfilesModal(false); setExpandedProfile(null); };
+  const toggleMenu = (id, e) => { e.stopPropagation(); setOpenMenuId(openMenuId === id ? null : id); };
+  const closeMenu  = () => setOpenMenuId(null);
   const NAV_H = 53;
 
   return (
@@ -541,18 +739,12 @@ export default function Discover() {
             <div className="mx-5 mb-4 rounded-xl border border-blue-500/20 p-3" style={{ background: "var(--panel-accent-bg)" }}>
               <div className="flex items-center justify-between mb-3">
                 <div className="text-[11.5px] font-bold uppercase tracking-wide text-foreground">Top Profiles</div>
-                <button onClick={() => setShowProfilesDrawer(true)} className="text-[11.5px] font-semibold hover:underline bg-transparent border-0 cursor-pointer text-blue-500">View All</button>
+                <button onClick={() => setShowProfilesModal(true)} className="text-[11.5px] font-semibold hover:underline bg-transparent border-0 cursor-pointer text-blue-500">View All</button>
               </div>
               <div className="flex items-center gap-5">
                 {TOP_PROFILES.map((p) => (
                   <div key={p.id} className="flex flex-col items-center gap-1.5">
-                    {p.avatar ? (
-                      <img src={p.avatar} alt={p.name} className="w-11 h-11 rounded-full object-cover border-2 border-white/30" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.3)" }} />
-                    ) : (
-                      <div className="w-11 h-11 rounded-full flex items-center justify-center text-xs font-bold text-white border-2 border-white/30" style={{ background: "#3a8878", boxShadow: "0 2px 8px rgba(0,0,0,0.3)" }}>
-                        {p.name.split(" ").map((w) => w[0]).join("").slice(0, 2)}
-                      </div>
-                    )}
+                    <img src={p.avatar} alt={p.name} className="w-11 h-11 rounded-full object-cover border-2 border-white/30" style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.3)" }} />
                     <span className="text-[10.5px] text-muted-foreground">{p.name.split(" ")[0]}</span>
                   </div>
                 ))}
@@ -650,20 +842,24 @@ export default function Discover() {
                             </button>
                           </div>
                           {/* Comments */}
-                          <button onClick={(e) => { e.stopPropagation(); setCommentsPost({ ...o, liveComments: liveComments[o.id] }); }}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setCommentsPost({ ...o, liveComments: liveComments[o.id] }); }}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer border-0 transition-all"
                             style={{ background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.25)", color: "var(--foreground)" }}
                             onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.28)"; e.currentTarget.style.color = "var(--primary-blue)"; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.15)"; e.currentTarget.style.color = "var(--foreground)"; }}>
+                            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.15)"; e.currentTarget.style.color = "var(--foreground)"; }}
+                          >
                             <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                             {(liveComments[o.id] || []).length}
                           </button>
                           {/* Share */}
-                          <button onClick={(e) => { e.stopPropagation(); setSharePost(o); }}
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setSharePost(o); }}
                             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer border-0 transition-all"
                             style={{ background: "rgba(59,130,246,0.15)", border: "1px solid rgba(59,130,246,0.25)", color: "var(--foreground)" }}
                             onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.28)"; e.currentTarget.style.color = "var(--primary-blue)"; }}
-                            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.15)"; e.currentTarget.style.color = "var(--foreground)"; }}>
+                            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(59,130,246,0.15)"; e.currentTarget.style.color = "var(--foreground)"; }}
+                          >
                             <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
                             Share
                           </button>
@@ -756,24 +952,22 @@ export default function Discover() {
       </div>
 
       {/* POST COMPOSER MODAL */}
-      {showComposerModal && <PostComposerModal onClose={() => setShowComposerModal(false)} onPublish={handlePublishPost} />}
+      {showComposerModal && (
+        <PostComposerModal onClose={() => setShowComposerModal(false)} onPublish={handlePublishPost} />
+      )}
 
       {/* PUBLISH SUCCESS MODAL */}
       {showPublishSuccess && (
         <>
-          <div className="fixed inset-0 bg-black/50 z-50" onClick={() => setShowPublishSuccess(false)} />
-          <div className="fixed inset-0 z-50 flex items-center justify-center pointer-events-none">
+          <div className="fixed inset-0 bg-black/50 z-40" onClick={() => setShowPublishSuccess(false)} />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <div
               className="pointer-events-auto flex flex-col rounded-2xl shadow-2xl px-8 py-7"
-              style={{ background: "var(--bg-card)", minWidth: 280, maxWidth: 340, border: "1.5px solid var(--border-color)" }}
+              style={{ background: "var(--bg-card)", minWidth: 280, maxWidth: 340, border: "1.5px solid var(--border-color)", boxShadow: "0 24px 64px rgba(0,0,0,0.35)" }}
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="text-[18px] font-bold mb-1" style={{ color: "var(--text-primary)" }}>
-                Post Published! 🎉
-              </div>
-              <div className="text-sm mb-5" style={{ color: "#6b7280" }}>
-                Your blog post is now live on Discover.
-              </div>
+              <div className="text-[18px] font-bold mb-1" style={{ color: "var(--text-primary)" }}>Post Published! 🎉</div>
+              <div className="text-sm mb-5" style={{ color: "#6b7280" }}>Your blog post is now live on Discover.</div>
               <div className="flex justify-end">
                 <button
                   onClick={() => setShowPublishSuccess(false)}
@@ -790,69 +984,17 @@ export default function Discover() {
         </>
       )}
 
-      {/* PROFILES BACKDROP */}
-      <div className={`fixed inset-0 bg-black/60 z-40 transition-opacity duration-300 ${showProfilesDrawer ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`} onClick={closeDrawer} />
-
-      {/* PROFILES SLIDE-UP DRAWER */}
-      <div className={`fixed bottom-0 left-0 right-0 z-50 rounded-t-3xl shadow-2xl transition-transform duration-300 ease-in-out ${showProfilesDrawer ? "translate-y-0" : "translate-y-full"}`}
-        style={{ maxHeight: "85vh", display: "flex", flexDirection: "column", background: "var(--bg-card)" }}>
-        <div className="flex justify-center pt-3 pb-1 flex-shrink-0"><div className="w-10 h-1 rounded-full" style={{ background: "rgba(0,0,0,0.2)" }} /></div>
-        <div className="flex items-center justify-between px-5 pt-3 pb-2 flex-shrink-0">
-          <h2 className="text-lg font-bold" style={{ color: "var(--text-primary)" }}>Top Profiles</h2>
-          <div className="flex items-center gap-2">
-            <button onClick={closeDrawer} className="w-8 h-8 rounded-full border flex items-center justify-center cursor-pointer" style={{ borderColor: "rgba(59,130,246,0.3)", background: "#f8fafc" }}>
-              <X size={15} style={{ color: "#6b7280" }} />
-            </button>
-          </div>
-        </div>
-        <div className="px-5 py-3 flex-shrink-0">
-          <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2" style={{ color: "#9ca3af" }} />
-            <input className="w-full h-10 pl-10 pr-4 rounded-xl outline-none text-sm border transition-colors"
-               style={{ background: "var(--hover-bg)", borderColor: "var(--border-color)", color: "var(--text-primary)" }}
-              placeholder="Find your next guide..." value={drawerSearch} onChange={(e) => setDrawerSearch(e.target.value)} />
-          </div>
-        </div>
-        <div className="px-5 pb-10 grid grid-cols-3 gap-4 overflow-y-auto flex-1"
-          style={{ minHeight: 0, scrollbarWidth: "thin", scrollbarColor: "rgba(58,109,138,0.3) transparent" }}>
-          {filteredProfiles.map((p) => (
-            <div key={p.id} className="relative">
-              <button className="w-full flex flex-col items-center gap-2 p-3 rounded-2xl border cursor-pointer transition-all"
-                style={{ borderColor: "var(--border-color)", background: "var(--panel-accent-bg)" }}
-                onClick={() => setExpandedProfile(expandedProfile?.id === p.id ? null : p)}
-                onMouseEnter={(e) => (e.currentTarget.style.background = "var(--hover-bg)")}
-                onMouseLeave={(e) => (e.currentTarget.style.background = "var(--bg-card)")}>
-                <img src={p.avatar} alt={p.name} className="w-14 h-14 rounded-full object-cover border-2" style={{ borderColor: "rgba(58,109,138,0.3)" }} />
-                <span className="text-xs font-semibold text-center leading-tight" style={{ color: "var(--text-primary)" }}>{p.name}</span>
-                <span className="text-[10px] text-center" style={{ color: "var(--text-secondary)" }}>{p.role}</span>
-              </button>
-              {expandedProfile?.id === p.id && p.years && (
-                <div className="absolute top-0 left-0 z-10 w-52 rounded-2xl shadow-xl p-4 border" style={{ background: "var(--bg-card)", borderColor: "var(--border-color)" }}>
-                  <div className="flex items-center gap-3 mb-3">
-                    <img src={p.avatar} alt={p.name} className="w-12 h-12 rounded-full border object-cover" style={{ borderColor: "rgba(58,109,138,0.3)" }} />
-                    <div>
-                      <div className="text-sm font-bold" style={{ color: "var(--text-primary)" }}>{p.name}</div>
-                      <div className="text-xs" style={{ color: "var(--text-secondary)" }}>{p.role}</div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs font-semibold mb-1" style={{ color: "#f59e0b" }}>
-                    <Star size={13} style={{ fill: "#f59e0b" }} />{p.years}
-                  </div>
-                  <div className="flex items-center gap-2 text-xs font-semibold mb-3" style={{ color: "#10b981" }}>
-                    <BarChart2 size={13} />{p.skill}
-                  </div>
-                  <button className="w-full py-1.5 rounded-lg text-xs font-semibold border cursor-pointer"
-                    style={{ borderColor: "#4a8fa8", color: "#2d6a8a", background: "transparent" }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = "#2d6a8a"; e.currentTarget.style.color = "#fff"; }}
-                    onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#2d6a8a"; }}>
-                    View Profile
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* PROFILES MODAL */}
+      {showProfilesModal && (
+        <ProfilesModal
+          onClose={closeProfilesModal}
+          filteredProfiles={filteredProfiles}
+          drawerSearch={drawerSearch}
+          setDrawerSearch={setDrawerSearch}
+          expandedProfile={expandedProfile}
+          setExpandedProfile={setExpandedProfile}
+        />
+      )}
 
       {/* COMMENTS MODAL */}
       {commentsPost && (
@@ -874,9 +1016,10 @@ export default function Discover() {
       {/* COMING SOON MODAL */}
       {showComingSoon && (
         <>
-          <div className="fixed inset-0 z-50 flex items-center justify-center" style={{ background: "transparent" }} onClick={() => setShowComingSoon(false)}>
+          <div className="fixed inset-0 z-40 bg-black/50" onClick={() => setShowComingSoon(false)} />
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
             <div
-              className="relative flex flex-col items-center justify-center rounded-3xl px-10 py-10 shadow-2xl"
+              className="pointer-events-auto relative flex flex-col items-center justify-center rounded-3xl px-10 py-10 shadow-2xl"
               style={{
                 background: "linear-gradient(135deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.2) 100%)",
                 backdropFilter: "blur(24px)",
@@ -892,8 +1035,10 @@ export default function Discover() {
                 <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
                 <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
               </svg>
-              <div className="mb-5 flex items-center justify-center rounded-2xl"
-                style={{ width: 64, height: 64, background: "rgba(59, 130, 246, 0.1)", border: "1px solid var(--border-color)", boxShadow: "0 2px 12px rgba(59, 130, 246, 0.15)" }}>
+              <div
+                className="mb-5 flex items-center justify-center rounded-2xl"
+                style={{ width: 64, height: 64, background: "rgba(59, 130, 246, 0.1)", border: "1px solid var(--border-color)", boxShadow: "0 2px 12px rgba(59, 130, 246, 0.15)" }}
+              >
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--primary-blue)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 22h14"/><path d="M5 2h14"/>
                   <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
@@ -906,8 +1051,11 @@ export default function Discover() {
                 <span className="text-[11px] font-bold tracking-[0.2em] uppercase" style={{ color: "var(--primary-blue)" }}>Stay Tuned</span>
                 <div className="h-px w-8" style={{ background: "var(--border-color)" }} />
               </div>
-              <button onClick={() => setShowComingSoon(false)} className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full border-0 cursor-pointer"
-                style={{ background: "var(--hover-bg)", color: "var(--text-secondary)" }}>
+              <button
+                onClick={() => setShowComingSoon(false)}
+                className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full border-0 cursor-pointer"
+                style={{ background: "var(--hover-bg)", color: "var(--text-secondary)" }}
+              >
                 <X size={13} />
               </button>
             </div>
