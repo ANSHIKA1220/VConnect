@@ -6,7 +6,7 @@ const Navigation = ({ onResetView, isDarkMode, onToggleDarkMode }) => {
     <div className="navigation">
       <div className="nav-top">
         <div className="logo-container">
-          <GraduationCap size={28} color="white" />
+          <img src="/logo.png" style={{width: '28px', height: '28px', objectFit: 'contain', filter: 'brightness(0) invert(1)'}} alt="Logo" />
         </div>
 
         <div className="nav-items">

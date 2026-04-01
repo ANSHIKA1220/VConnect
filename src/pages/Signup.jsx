@@ -65,15 +65,16 @@ const SignUp = () => {
       alignItems: 'center',
       gap: '5px',
     },
-    icon: {
-      width: '80px',
-      height: '80px',
-      background: 'rgba(255, 255, 255, 0.2)',
-      borderRadius: '20px',
+    logoCircle: {
+      width: '100px',
+      height: '100px',
+      background: 'white',
+      borderRadius: '50%',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      marginBottom: '30px',
+      marginBottom: '24px',
+      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.2)',
     },
     iconSvg: {
       width: '40px',
@@ -228,12 +229,8 @@ const SignUp = () => {
           ← Back to login
         </Link>
         
-        <div style={styles.icon}>
-          <svg style={styles.iconSvg} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path d="M12 14l9-5-9-5-9 5 9 5z"/>
-            <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/>
-            <path d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"/>
-          </svg>
+        <div style={styles.logoCircle}>
+          <img src="/logo.png" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%'}} alt="VConnect Logo" />
         </div>
         <h1 style={styles.h1}>Student Portal</h1>
         <div style={styles.description}>

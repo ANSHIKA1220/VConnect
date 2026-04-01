@@ -227,7 +227,7 @@ const Login = () => {
       {/* 1st Half: Branding */}
       <div style={styles.leftSide}>
         <div style={styles.logoCircle}>
-          <GraduationCap size={56} color="#3182CE" fill="#3182CE" fillOpacity={0.1} />
+          <img src="/logo.png" style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%'}} alt="VConnect Logo" />
         </div>
         <h1 style={styles.brandTitle}>VConnect</h1>
         <p style={styles.brandSubtitle}>Connect. Learn. Grow Together.</p>
