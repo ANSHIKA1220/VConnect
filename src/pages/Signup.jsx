@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import { User, Mail, Lock } from 'lucide-react';
 
 const SignUp = () => {
-  const [email, setEmail] = useState('');
+  const [fullName, setFullName] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSignup = (event) => {
@@ -16,14 +18,21 @@ const SignUp = () => {
       return;
     }
     
-    if (!termsAccepted) {
-      alert('Please accept the Terms & Conditions');
-      return;
-    }
-    
     localStorage.setItem('vconnect-auth', 'true');
     navigate('/', { replace: true });
   };
+
+  const getCompletedFields = () => {
+    let count = 0;
+    if (fullName) count++;
+    count++; // Email static
+    if (password) count++;
+    if (confirmPassword) count++;
+    return count;
+  };
+
+  const completed = getCompletedFields();
+  const progressPercent = (completed / 4) * 100;
 
   const styles = {
     container: {
@@ -34,8 +43,8 @@ const SignUp = () => {
       overflow: 'hidden',
     },
     leftSide: {
-      width: '40%',
-      background: 'linear-gradient(135deg, #5483B3 0%, #6a9ac4 100%)',
+      width: '50%',
+      background: 'linear-gradient(135deg, #2C5282 0%, #3182CE 100%)',
       padding: '60px 40px',
       color: 'white',
       position: 'relative',
@@ -82,93 +91,128 @@ const SignUp = () => {
       opacity: 0.9,
     },
     rightSide: {
-      width: '60%',
+      width: '50%',
       padding: '50px 50px',
       position: 'relative',
+      overflowY: 'auto'
     },
     signupHeaderH2: {
       fontSize: '32px',
       color: '#111827',
       marginBottom: '8px',
+      textAlign: 'center'
     },
     signupHeaderP: {
-      fontSize: '13px',
+      fontSize: '14px',
       color: '#6b7280',
-      marginBottom: '25px',
+      marginBottom: '20px',
+      textAlign: 'center'
+    },
+    progressWrapper: {
+      marginBottom: '24px',
+    },
+    progressLineBg: {
+      width: '100%',
+      height: '4px',
+      background: '#e2e8f0',
+      borderRadius: '2px',
+      marginBottom: '8px',
+      overflow: 'hidden'
+    },
+    progressLineFill: {
+      height: '100%',
+      background: '#5b7b97',
+      borderRadius: '2px',
+      width: `${progressPercent}%`,
+      transition: 'width 0.3s ease'
+    },
+    progressText: {
+      fontSize: '13px',
+      color: '#64748b',
+      textAlign: 'center',
     },
     formGroup: {
-      marginBottom: '18px',
-    },
-    label: {
-      display: 'block',
-      fontSize: '13px',
-      color: '#374151',
-      marginBottom: '8px',
+      marginBottom: '16px',
     },
     inputWrapper: {
       position: 'relative',
-    },
-    inputIcon: {
-      position: 'absolute',
-      left: '15px',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      width: '16px',
-      height: '16px',
-      fill: '#9ca3af',
-    },
-    input: {
-      width: '100%',
-      padding: '13px 45px',
-      border: '1px solid #e5e7eb',
-      borderRadius: '10px',
-      fontSize: '14px',
-      background: '#f9fafb',
-      outline: 'none',
-      boxSizing: 'border-box',
-    },
-    checkboxGroup: {
       display: 'flex',
       alignItems: 'center',
-      marginBottom: '20px',
-      marginTop: '5px',
+      background: 'white',
+      border: '1px solid #e5e7eb',
+      borderRadius: '16px',
+      padding: '4px 16px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
     },
-    checkbox: {
-      width: 'auto',
-      marginRight: '8px',
+    emailWrapper: {
+      position: 'relative',
+      display: 'flex',
+      alignItems: 'center',
+      background: '#f0f7ff',
+      border: '1px solid #bae6fd',
+      borderRadius: '16px',
+      padding: '14px 16px',
+      marginBottom: '16px',
+      boxShadow: '0 2px 4px rgba(0,0,0,0.02)'
+    },
+    inputIcon: {
+      color: '#94a3b8',
+      marginRight: '12px'
+    },
+    emailIcon: {
+      color: '#5b7b97',
+      marginRight: '12px'
+    },
+    input: {
+      flex: 1,
+      height: '42px',
+      border: 'none',
+      background: 'transparent',
+      fontSize: '14px',
+      outline: 'none',
+      color: '#1e293b'
+    },
+    emailText: {
+      fontSize: '14px',
+      color: '#475569',
+    },
+    emailDomain: {
+      color: '#1e3a8a',
+      fontWeight: '600'
+    },
+    toggleBtn: {
+      width: '36px',
+      height: '20px',
+      borderRadius: '10px',
+      background: '#0f172a',
+      position: 'relative',
+      border: 'none',
       cursor: 'pointer',
+      padding: 0,
+      marginLeft: '8px'
     },
-    checkboxLabel: {
-      fontSize: '12px',
-      color: '#6b7280',
-      marginBottom: 0,
-      cursor: 'pointer',
-    },
-    checkboxLink: {
-      color: '#5483B3',
-      textDecoration: 'none',
+    toggleCircle: {
+      width: '14px',
+      height: '14px',
+      background: 'white',
+      borderRadius: '50%',
+      position: 'absolute',
+      top: '3px',
+      transition: 'left 0.2s',
     },
     signupBtn: {
       width: '100%',
-      padding: '15px',
-      background: '#111827',
+      padding: '16px',
+      background: '#8ba2b9', // matched to UI
       color: 'white',
       border: 'none',
-      borderRadius: '10px',
+      borderRadius: '16px',
       fontSize: '16px',
-      fontWeight: 'bold',
+      fontWeight: '600',
       cursor: 'pointer',
+      marginTop: '12px',
       marginBottom: '18px',
-    },
-    loginLink: {
-      textAlign: 'center',
-      fontSize: '13px',
-      color: '#6b7280',
-    },
-    loginLinkA: {
-      color: '#5483B3',
-      textDecoration: 'none',
-      fontWeight: 'bold',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
     },
   };
 
@@ -198,128 +242,119 @@ const SignUp = () => {
       </div>
 
       <div style={styles.rightSide}>
-        <div>
-          <h2 style={styles.signupHeaderH2}>Sign Up</h2>
-          <p style={styles.signupHeaderP}>Create your student account to get started.</p>
-        </div>
-
-        <form onSubmit={handleSignup}>
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Email Address</label>
-            <div style={styles.inputWrapper}>
-              <svg style={styles.inputIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-              </svg>
-              <input 
-                style={styles.input}
-                type="email" 
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#5483B3';
-                  e.target.style.background = 'white';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#f9fafb';
-                }}
-                required
-              />
+        <div style={{ maxWidth: '400px', margin: '0 auto' }}>
+          <h2 style={styles.signupHeaderH2}>Create Account</h2>
+          <p style={styles.signupHeaderP}>Sign up to get started</p>
+          
+          <div style={styles.progressWrapper}>
+            <div style={styles.progressLineBg}>
+              <div style={styles.progressLineFill}></div>
             </div>
+            <div style={styles.progressText}>{completed} of 4 fields complete</div>
           </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Password</label>
-            <div style={styles.inputWrapper}>
-              <svg style={styles.inputIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-              </svg>
-              <input 
-                style={styles.input}
-                type="password" 
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#5483B3';
-                  e.target.style.background = 'white';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#f9fafb';
-                }}
-                required
-              />
+          <form onSubmit={handleSignup}>
+            <div style={styles.formGroup}>
+              <div style={styles.inputWrapper}>
+                <User size={20} style={styles.inputIcon} />
+                <input 
+                  style={styles.input}
+                  type="text" 
+                  placeholder="Full Name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#8ba2b9';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(139, 162, 185, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+                  }}
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          <div style={styles.formGroup}>
-            <label style={styles.label}>Confirm Password</label>
-            <div style={styles.inputWrapper}>
-              <svg style={styles.inputIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                <path d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-              </svg>
-              <input 
-                style={styles.input}
-                type="password" 
-                placeholder="Confirm your password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                onFocus={(e) => {
-                  e.target.style.borderColor = '#5483B3';
-                  e.target.style.background = 'white';
-                }}
-                onBlur={(e) => {
-                  e.target.style.borderColor = '#e5e7eb';
-                  e.target.style.background = '#f9fafb';
-                }}
-                required
-              />
+            <div style={styles.emailWrapper}>
+              <Mail size={20} style={styles.emailIcon} />
+              <div style={styles.emailText}>
+                Your email will be: <span style={styles.emailDomain}>yourname@vitbhopal.ac.in</span>
+              </div>
             </div>
-          </div>
 
-          <div style={styles.checkboxGroup}>
-            <input 
-              style={styles.checkbox}
-              type="checkbox" 
-              id="terms"
-              checked={termsAccepted}
-              onChange={(e) => setTermsAccepted(e.target.checked)}
-              required
-            />
-            <label htmlFor="terms" style={styles.checkboxLabel}>
-              I agree to the <a 
-                href="#" 
-                style={styles.checkboxLink}
-                onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
-                onMouseOut={(e) => e.target.style.textDecoration = 'none'}
-              >
-                Terms & Conditions
-              </a>
-            </label>
-          </div>
+            <div style={styles.formGroup}>
+              <div style={styles.inputWrapper}>
+                <Lock size={20} style={styles.inputIcon} />
+                <input 
+                  style={styles.input}
+                  type={showPassword ? "text" : "password"} 
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#8ba2b9';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(139, 162, 185, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+                  }}
+                  required
+                />
+                <button 
+                  type="button" 
+                  style={styles.toggleBtn}
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  <div style={{...styles.toggleCircle, left: showPassword ? '19px' : '3px'}}></div>
+                </button>
+              </div>
+            </div>
 
-          <button 
-            type="submit" 
-            style={styles.signupBtn}
-            onMouseOver={(e) => e.target.style.background = '#1f2937'}
-            onMouseOut={(e) => e.target.style.background = '#111827'}
-          >
-            Sign Up
-          </button>
+            <div style={styles.formGroup}>
+              <div style={styles.inputWrapper}>
+                <Lock size={20} style={styles.inputIcon} />
+                <input 
+                  style={styles.input}
+                  type={showConfirmPassword ? "text" : "password"} 
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#8ba2b9';
+                    e.target.style.boxShadow = '0 0 0 4px rgba(139, 162, 185, 0.1)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = '#e5e7eb';
+                    e.target.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+                  }}
+                  required
+                />
+                <button 
+                  type="button" 
+                  style={styles.toggleBtn}
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                >
+                  <div style={{...styles.toggleCircle, left: showConfirmPassword ? '19px' : '3px'}}></div>
+                </button>
+              </div>
+            </div>
 
-          <div style={styles.loginLink}>
-            Already have an account? <Link 
-              to="/login" 
-              style={styles.loginLinkA}
-              onMouseOver={(e) => e.target.style.textDecoration = 'underline'}
-              onMouseOut={(e) => e.target.style.textDecoration = 'none'}
+            <button 
+              type="submit" 
+              style={{
+                ...styles.signupBtn,
+                background: (fullName && password && confirmPassword) ? '#3182CE' : '#8ba2b9',
+                boxShadow: (fullName && password && confirmPassword) ? '0 4px 12px rgba(49, 130, 206, 0.3)' : '0 4px 6px rgba(0, 0, 0, 0.1)'
+              }}
+              onMouseOver={(e) => e.target.style.background = (fullName && password && confirmPassword) ? '#2C5282' : '#7a91a8'}
+              onMouseOut={(e) => e.target.style.background = (fullName && password && confirmPassword) ? '#3182CE' : '#8ba2b9'}
             >
-              Sign In
-            </Link>
-          </div>
-        </form>
+              Sign Up
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
