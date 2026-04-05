@@ -79,7 +79,7 @@ export default function Home() {
     if (!text) return;
     const newComment = { id: Date.now(), author: "You", text };
     setFeed(prev => prev.map(item =>
-      item.id === id ? { ...item, comments: [...item.comments, newComment] } : item
+      item.id === id ? { ...item, comments: [newComment, ...item.comments] } : item
     ));
     setCommentText(prev => ({ ...prev, [id]: "" }));
   };
@@ -88,10 +88,10 @@ export default function Home() {
 
   return (
     <MainLayout>
-      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start", justifyContent: "center" }}>
+      <div style={{ display: "flex", gap: "24px", alignItems: "flex-start" }}>
 
         {/* Center Feed */}
-        <div className="flex-1 min-w-0 max-w-[640px] space-y-5">
+        <div className="flex-1 min-w-0 max-w-[640px] space-y-5" style={{ marginLeft: "40px" }}>
 
 
 
@@ -121,7 +121,7 @@ export default function Home() {
             const hasMore = item.comments.length > COMMENTS_PREVIEW;
 
             return (
-              <div key={item.id} className="bg-[var(--panel-accent-bg)] border border-border/40 rounded-2xl p-5 shadow-sm">
+              <div key={item.id} className="bg-card border border-border rounded-2xl p-5 shadow-card">
                 <div className="flex items-center gap-3">
                   <img src={item.avatar} alt={item.author} className="w-9 h-9 rounded-full object-cover" />
                   <div>
@@ -188,7 +188,7 @@ export default function Home() {
         </div>
 
         {/* Right Panel - only on Home */}
-        <div style={{ width: "288px", flexShrink: 0, position: "sticky", top: "24px" }}>
+        <div style={{ width: "288px", flexShrink: 0, position: "sticky", top: "24px", marginLeft: "auto" }}>
           <RightPanel
             selectedTopic={selectedTopic}
             onTopicSelect={setSelectedTopic}
